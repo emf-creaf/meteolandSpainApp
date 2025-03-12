@@ -21,5 +21,23 @@ meteoland_spain_app <- function() {
   dbExecute(duckdb_proxy, install_httpfs_statement)
   dbExecute(duckdb_proxy, httpfs_statement)
 
-  
+  ### Language input ###########################################################
+  shiny::addResourcePath(
+    'images', system.file('resources', 'images', package = 'meteolandApp')
+  )
+  lang_choices <- c('cat', 'spa', 'eng')
+  lang_flags <- c(
+    glue::glue(
+      "<img class='flag-image' src='images/cat.png'",
+      " width=20px><div class='flag-lang'>%s</div></img>"
+    ),
+    glue::glue(
+      "<img class='flag-image' src='images/spa.png'",
+      " width=20px><div class='flag-lang'>%s</div></img>"
+    ),
+    glue::glue(
+      "<img class='flag-image' src='images/eng.png'",
+      " width=20px><div class='flag-lang'>%s</div></img>"
+    )
+  )
 }
