@@ -66,25 +66,17 @@ meteoland_spain_app <- function() {
       collapsible = TRUE,
 
       # Lang selector (input for navbaraPageWithInputs)
-      # inputs = shinyWidgets::pickerInput(
-      #   "lang", NULL,
-      #   choices = lang_choices,
-      #   selected = "eng",
-      #   width = "100px",
-      #   choicesOpt = list(
-      #     content = c(
-      #       sprintf(lang_flags[1], lang_choices[1]),
-      #       sprintf(lang_flags[2], lang_choices[2]),
-      #       sprintf(lang_flags[3], lang_choices[3])
-      #     )
-      #   )
-      # ),
-      inputs = shinyWidgets::slimSelectInput(
+      inputs = shinyWidgets::pickerInput(
         "lang", NULL,
-        choices = shinyWidgets::prepare_slim_choices(
-          .data = data.frame(lang_choices = lang_choices, lang_label = lang_flags),
-          label = NULL, value = lang_choices,
-          html = lang_label
+        choices = lang_choices,
+        selected = "eng",
+        width = "100px",
+        choicesOpt = list(
+          content = c(
+            sprintf(lang_flags[1], lang_choices[1]),
+            sprintf(lang_flags[2], lang_choices[2]),
+            sprintf(lang_flags[3], lang_choices[3])
+          )
         )
       ),
 
@@ -107,4 +99,11 @@ meteoland_spain_app <- function() {
   server <- function(input, output, session) {
 
   } # END of server function
+
+  #### Wrap the App ####
+  app_wrapped <- shiny::shinyApp(
+    ui = ui, server = server
+  )
+  # shiny::runApp(meteoland_app)
+  return(app_wrapped)
 }
