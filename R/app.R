@@ -103,4 +103,8 @@ meteoland_spain_app <- function() {
       ),
     ) # END of navbarPage
   ) # END of UI tagList
+
+  server <- function(input, output, session) {
+
+  } # END of server function
 }
