@@ -71,6 +71,27 @@ mod_map <- function(
     # get the selected bitmap info an base64 text
     bitmap_sel <- DBI::dbGetQuery(duckdb_proxy, bitmap_sel_query)
 
+    # create the custom legend to show with the bitmap
+    legend_js <- mapdeck::legend_element(
+      variables = rev(round(seq(
+        bitmap_sel[["min_value"]],
+        bitmap_sel[["max_value"]],
+        length.out = 5
+      ), 0)),
+      colours = scales::col_numeric(
+        hcl.colors(10, "ag_GrnYl", alpha = 0.8),
+        c(bitmap_sel[["min_value"]], bitmap_sel[["max_value"]]),
+        na.color = "#FFFFFF00", reverse = FALSE, alpha = TRUE
+      )(seq(
+        bitmap_sel[["min_value"]],
+        bitmap_sel[["max_value"]],
+        length.out = 5
+      )),
+      colour_type = "fill", variable_type = "gradient",
+      title = translate_app(var_sel, lang())
+    ) |>
+      mapdeck::mapdeck_legend()
+
     # update the map
     mapdeck::mapdeck_update(map_id = ns("output_map")) |>
       mapdeck::add_bitmap(
@@ -81,6 +102,7 @@ mod_map <- function(
         ),
         update_view = FALSE, focus_layer = FALSE,
         transparent_colour = "#00000000"
-      )
+      ) |>
+      mapdeck::add_legend(legend = legend_js, layer_id = "custom_legend")
   })
 }
