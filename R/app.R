@@ -33,7 +33,7 @@ meteoland_spain_app <- function() {
 
   #### Language input ####
   shiny::addResourcePath(
-    "images", system.file("resources", "images", package = "meteolandApp")
+    "images", system.file("resources", "images", package = "meteolandSpainApp")
   )
   lang_choices <- c("cat", "spa", "eng")
   lang_flags <- c(
@@ -59,6 +59,9 @@ meteoland_spain_app <- function() {
     shiny::tags$head(
       # js script,
 
+      # initializations
+      waiter::use_waiter(),
+      waiter::use_hostess(),
       # corporative image custom css
       shiny::includeCSS(
         system.file("apps_css", "corp_image.css", package = "lfcdata")
@@ -74,8 +77,6 @@ meteoland_spain_app <- function() {
       title = "Meteoland App",
       id = "nav",
       collapsible = TRUE,
-
-      # initializations
 
       # Lang selector (input for navbaraPageWithInputs)
       inputs = shinyWidgets::pickerInput(

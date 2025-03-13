@@ -31,7 +31,15 @@ mod_map <- function(
 ) {
   # get the ns
   ns <- session$ns
-  
+
+  # hostess ready
+  hostess_map <- waiter::Hostess$new(infinite = TRUE)
+  hostess_map$set_loader(waiter::hostess_loader(
+    svg = "images/hostess_image.svg",
+    progress_type = "fill",
+    fill_direction = "ltr"
+  ))
+
   # output base map, later we update it
   output$output_map <- mapdeck::renderMapdeck({
     mapdeck::mapdeck(
@@ -46,14 +54,31 @@ mod_map <- function(
     )
   })
 
-  # Updating the map based on inputs
-  shiny::observe({
-
+  # update the data on input change
+  bitmap_data <- shiny::reactive({
     # only run when inputs are populated
     shiny::validate(
       shiny::need(user_inputs$user_var, "Missing meteo variable"),
       shiny::need(user_inputs$user_date, "Missing date")
     )
+
+    # show hostess
+    waiter_map <- waiter::Waiter$new(
+      id = ns('output_map'),
+      html = shiny::tagList(
+        hostess_map$get_loader(),
+        shiny::br(),
+        shiny::p(glue::glue(
+          "{translate_app('getting_data_for', lang())} {translate_app(user_inputs$user_var, lang())} & {user_inputs$user_date}"
+        )),
+        shiny::p(translate_app("please_wait", lang()))
+      ),
+      color = '#E8EAEB'
+    )
+    waiter_map$show()
+    on.exit(waiter_map$hide(), add = TRUE)
+    hostess_map$start()
+    on.exit(hostess_map$close(), add = TRUE)
 
     # needed inputs
     var_sel <- user_inputs$user_var
@@ -69,9 +94,19 @@ mod_map <- function(
     )
 
     # browser()
-    # get the selected bitmap info an base64 text
-    bitmap_sel <- DBI::dbGetQuery(duckdb_proxy, bitmap_sel_query)
+    # return the selected bitmap info (base64 string, bbox...)
+    DBI::dbGetQuery(duckdb_proxy, bitmap_sel_query)
+  }) |>
+    shiny::bindCache(
+      user_inputs$user_var, user_inputs$user_date,
+      cache = "session"
+    ) |>
+    shiny::bindEvent(user_inputs$user_var, user_inputs$user_date)
 
+  # Updating the map
+  shiny::observe({
+    # get the data
+    bitmap_sel <- bitmap_data()
     # create the custom legend to show with the bitmap
     legend_js <- mapdeck::legend_element(
       variables = rev(round(seq(
@@ -90,7 +125,7 @@ mod_map <- function(
       )),
       colour_type = "fill", variable_type = "gradient",
       title = glue::glue(
-        "{translate_app(var_sel, lang())} - {user_inputs$user_date}"
+        "{translate_app(user_inputs$user_var, lang())} - {user_inputs$user_date}"
       )
     ) |>
       mapdeck::mapdeck_legend()
