@@ -18,3 +18,5 @@ Imports:
     shiny,
     shinyWidgets,
     withr
+Depends: 
+    R (>= 3.5)

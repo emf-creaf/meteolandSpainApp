@@ -93,11 +93,26 @@ meteoland_spain_app <- function() {
           )
         )
       ),
+
+      # Main (Explore) tab
+      shiny::tabPanel(
+        title = mod_tab_translateOutput('main_tab_translation')
+      ) # END of main (Explore) tab
     ) # END of navbarPage
   ) # END of UI tagList
 
+  #### SERVER ####
   server <- function(input, output, session) {
+    # lang reactive
+    lang <- shiny::reactive({
+      input$lang
+    })
 
+    # tab translations
+    shiny::callModule(
+      mod_tab_translate, 'main_tab_translation',
+      'main_tab_translation', lang
+    )
   } # END of server function
 
   #### Wrap the App ####
