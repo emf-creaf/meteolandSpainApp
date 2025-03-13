@@ -96,7 +96,17 @@ meteoland_spain_app <- function() {
 
       # Main (Explore) tab
       shiny::tabPanel(
-        title = mod_tab_translateOutput('main_tab_translation')
+        title = mod_tab_translateOutput("main_tab_translation"),
+        icon = shiny::icon("eye"),
+        shiny::sidebarLayout(
+          position = "right", fluid = TRUE,
+          sidebarPanel = shiny::sidebarPanel(
+            mod_userInput("user_input")
+          ), # END of sidebarPanel
+          mainPanel = shiny::mainPanel(
+
+          ) # END of mainPanel
+        ) # END of sidebarLayout
       ) # END of main (Explore) tab
     ) # END of navbarPage
   ) # END of UI tagList
@@ -108,10 +118,15 @@ meteoland_spain_app <- function() {
       input$lang
     })
 
+    # modules
+    user_reactives <- shiny::callModule(
+      mod_user, 'user_input', lang
+    )
+
     # tab translations
     shiny::callModule(
-      mod_tab_translate, 'main_tab_translation',
-      'main_tab_translation', lang
+      mod_tab_translate, "main_tab_translation",
+      "main_tab_translation", lang
     )
   } # END of server function
 
