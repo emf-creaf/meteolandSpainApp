@@ -107,7 +107,11 @@ mod_user <- function(
         # user_date
         shiny::column(
           width = 6,
-          shiny::p("TODO: apply button to update the timeseries")
+          shinyWidgets::actionBttn(
+            "user_ts_update", translate_app("user_ts_update", lang()),
+            icon = shiny::icon("rotate"),
+            style = "simple", color = "royal", size = "sm"
+          )
         )
       ) # END of second row of inputs
     ) # END of inputs tagList
@@ -118,6 +122,9 @@ mod_user <- function(
   shiny::observe({
     user_reactives$user_var <- input$user_var
     user_reactives$user_date <- input$user_date
+    user_reactives$user_longitude <- input$user_longitude
+    user_reactives$user_latitude <- input$user_latitude
+    user_reactives$user_ts_update <- input$user_ts_update
   })
   return(user_reactives)
 }
