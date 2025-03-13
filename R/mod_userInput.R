@@ -58,7 +58,7 @@ mod_user <- function(
       shiny::fluidRow(
         # user_var
         shiny::column(
-          width = 5, offset = 1,
+          width = 6,
           shinyWidgets::pickerInput(
             ns("user_var"), label = translate_app("user_var", lang()),
             choices = user_var_choices,
@@ -72,7 +72,7 @@ mod_user <- function(
         ),
         # user_date
         shiny::column(
-          width = 5, offset = 1,
+          width = 6,
           shinyWidgets::airDatepickerInput(
             ns("user_date"), label = translate_app("user_date", lang()),
             value = user_date_choices[length(user_date_choices)],
@@ -82,7 +82,34 @@ mod_user <- function(
             firstDay = 1
           )
         )
-      ) # END of first row of inputs
+      ), # END of first row of inputs
+      # second row of inputs, time series
+      shiny::h4(translate_app("user_ts_title", lang())),
+      shiny::fluidRow(
+        # user_var
+        shiny::column(
+          width = 6,
+          shinyWidgets::numericInputIcon(
+            "user_longitude", translate_app("user_longitude", lang()),
+            value = -5.641,
+            min = -9.500, max = 4, step = 0.001,
+            icon = shiny::icon("x"),
+            help_text = translate_app("user_longitude_help", lang())
+          ),
+          shinyWidgets::numericInputIcon(
+            "user_latitude", translate_app("user_latitude", lang()),
+            value = 42.662,
+            min = 35.500, max = 44, step = 0.001,
+            icon = shiny::icon("y"),
+            help_text = translate_app("user_latitude_help", lang())
+          )
+        ),
+        # user_date
+        shiny::column(
+          width = 6,
+          shiny::p("TODO: apply button to update the timeseries")
+        )
+      ) # END of second row of inputs
     ) # END of inputs tagList
   }) # END of renderUI
 
