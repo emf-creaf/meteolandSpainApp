@@ -88,7 +88,9 @@ mod_map <- function(
         length.out = 5
       )),
       colour_type = "fill", variable_type = "gradient",
-      title = translate_app(var_sel, lang())
+      title = glue::glue(
+        "{translate_app(var_sel, lang())} - {user_inputs$user_date}"
+      )
     ) |>
       mapdeck::mapdeck_legend()
 
