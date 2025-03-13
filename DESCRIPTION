@@ -12,10 +12,12 @@ Imports:
     DBI,
     dplyr,
     duckdb,
+    echarts4r,
     glue,
     htmltools,
     mapdeck,
     purrr,
+    sf,
     shiny,
     shinyWidgets,
     withr
