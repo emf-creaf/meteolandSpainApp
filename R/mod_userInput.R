@@ -102,16 +102,17 @@ mod_user <- function(
             min = 35.500, max = 44, step = 0.001,
             icon = shiny::icon("y"),
             help_text = translate_app("user_latitude_help", lang())
-          )
-        ),
-        # user_date
-        shiny::column(
-          width = 6,
+          ),
           shinyWidgets::actionBttn(
             "user_ts_update", translate_app("user_ts_update", lang()),
             icon = shiny::icon("rotate"),
             style = "simple", color = "royal", size = "sm"
           )
+        ),
+        # user_date
+        shiny::column(
+          width = 6,
+          shiny::p("TODO - Placeholder for the info about map resolution and waiting time")
         )
       ) # END of second row of inputs
     ) # END of inputs tagList
