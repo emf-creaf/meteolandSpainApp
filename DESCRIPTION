@@ -14,6 +14,7 @@ Imports:
     duckdb,
     glue,
     htmltools,
+    mapdeck,
     purrr,
     shiny,
     shinyWidgets,

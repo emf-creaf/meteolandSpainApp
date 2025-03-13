@@ -9,7 +9,7 @@
 meteoland_spain_app <- function() {
   #### duckdb connection ####
   duckdb_proxy <- duckdb::dbConnect(duckdb::duckdb())
-  withr::defer(duckdb::dbDisconnect(duckdb_proxy))
+  # withr::defer(duckdb::dbDisconnect(duckdb_proxy))
   install_httpfs_statement <- glue::glue_sql(
     .con = duckdb_proxy,
     "INSTALL httpfs;"
@@ -20,6 +20,16 @@ meteoland_spain_app <- function() {
   )
   DBI::dbExecute(duckdb_proxy, install_httpfs_statement)
   DBI::dbExecute(duckdb_proxy, httpfs_statement)
+
+  #### Pre-loaded data ####
+  # bitmaps
+  bitmaps_query <- glue::glue_sql(
+    .con = duckdb_proxy,
+    "CREATE VIEW bitmaps AS
+      SELECT * FROM
+        read_parquet('https://data-emf.creaf.cat/public/parquet/bitmaps/daily_interpolated_meteo_bitmaps.parquet');"
+  )
+  DBI::dbExecute(duckdb_proxy, bitmaps_query)
 
   #### Language input ####
   shiny::addResourcePath(
@@ -104,7 +114,7 @@ meteoland_spain_app <- function() {
             mod_userInput("user_input")
           ), # END of sidebarPanel
           mainPanel = shiny::mainPanel(
-
+            mod_mapOutput("map_output")
           ) # END of mainPanel
         ) # END of sidebarLayout
       ) # END of main (Explore) tab
@@ -118,9 +128,15 @@ meteoland_spain_app <- function() {
       input$lang
     })
 
+    # mapbox token
+    mapdeck::set_token(Sys.getenv("MAPBOX_TOKEN"))
+
     # modules
     user_reactives <- shiny::callModule(
       mod_user, 'user_input', lang
+    )
+    map_reactives <- shiny::callModule(
+      mod_map, 'map_output', user_reactives, duckdb_proxy, lang
     )
 
     # tab translations
