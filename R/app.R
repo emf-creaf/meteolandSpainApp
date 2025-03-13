@@ -75,6 +75,8 @@ meteoland_spain_app <- function() {
       id = "nav",
       collapsible = TRUE,
 
+      # initializations
+
       # Lang selector (input for navbaraPageWithInputs)
       inputs = shinyWidgets::pickerInput(
         "lang", NULL,

@@ -31,6 +31,7 @@ mod_map <- function(
 ) {
   # get the ns
   ns <- session$ns
+  
   # output base map, later we update it
   output$output_map <- mapdeck::renderMapdeck({
     mapdeck::mapdeck(
@@ -81,7 +82,7 @@ mod_map <- function(
       colours = scales::col_numeric(
         hcl.colors(10, "ag_GrnYl", alpha = 0.8),
         c(bitmap_sel[["min_value"]], bitmap_sel[["max_value"]]),
-        na.color = "#FFFFFF00", reverse = FALSE, alpha = TRUE
+        na.color = "#FFFFFF00", reverse = TRUE, alpha = TRUE
       )(seq(
         bitmap_sel[["min_value"]],
         bitmap_sel[["max_value"]],
