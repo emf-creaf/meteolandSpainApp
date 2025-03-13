@@ -10,6 +10,6 @@ meteoland_spain_app()
 Function to launch the app (in console, in container...)
 }
 \details{
-This functions build the UI (calling any modules necessary), server
+This function builds the UI (calling any modules necessary), the server
 (calling any modules necessary) and return a \code{ShinyApp()} object.
 }
