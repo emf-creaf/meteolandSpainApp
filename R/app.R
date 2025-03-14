@@ -137,9 +137,16 @@ meteoland_spain_app <- function() {
             mod_userInput("user_input")
           ), # END of sidebarPanel
           mainPanel = shiny::mainPanel(
-            mod_mapOutput("map_output"),
-            shiny::br(),
-            mod_tsOutput("ts_output")
+            shiny::fluidRow(
+              shiny::column(
+                width = 8,
+                mod_mapOutput("map_output")
+              ),
+              shiny::column(
+                width = 4,
+                mod_tsOutput("ts_output")
+              )
+            )
           ) # END of mainPanel
         ) # END of sidebarLayout
       ) # END of main (Explore) tab
