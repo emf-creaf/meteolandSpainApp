@@ -115,6 +115,22 @@ meteoland_spain_app <- function() {
       shiny::tabPanel(
         title = mod_tab_translateOutput("main_tab_translation"),
         icon = shiny::icon("eye"),
+        ########################################################### debug ####
+        shiny::absolutePanel(
+          id = 'debug', class = 'panel panel-default', fixed = TRUE,
+          draggable = TRUE, width = 640, height = 'auto',
+          # top = 100, left = 100, rigth = 'auto', bottom = 'auto',
+          top = 'auto', left = 10, right = 'auto', bottom = 15,
+          # top = 60, left = 'auto', right = 50, bottom = 'auto',
+        
+          shiny::h3("DEBUG"),
+          shiny::textOutput('debug1'),
+          shiny::textOutput('debug2'),
+          shiny::textOutput('debug3')
+        ),
+        ####################################################### end debug ####
+
+
         shiny::sidebarLayout(
           position = "right", fluid = TRUE,
           sidebarPanel = shiny::sidebarPanel(
@@ -161,6 +177,17 @@ meteoland_spain_app <- function() {
       mod_tab_translate, "main_tab_translation",
       "main_tab_translation", lang
     )
+
+    # debug #####
+    output$debug1 <- shiny::renderPrint({
+      user_reactives$user_reactives$user_ts_update
+    })
+    output$debug2 <- shiny::renderPrint({
+      user_reactives$user_reactives$user_latitude
+    })
+    output$debug3 <- shiny::renderPrint({
+      user_reactives$user_reactives$user_longitude
+    })
   } # END of server function
 
   #### Wrap the App ####
