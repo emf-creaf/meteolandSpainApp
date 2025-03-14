@@ -11,9 +11,12 @@ mod_tsOutput <- function(id) {
   shiny::tagList(
     shiny::column(
       width = 12,
-      echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 200),
-      echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 200),
-      echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 200)
+      shiny::div(
+        id = ns("ts_hostess"),
+        echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 200),
+        echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 200),
+        echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 200)
+      )
     )
   )
 }
@@ -125,7 +128,7 @@ mod_ts <- function(
   was_running <- FALSE
   shiny::observe({
     waiter_ts <- waiter::Waiter$new(
-      id = ns('output_ts_temp'),
+      id = ns("ts_hostess"),
       html = shiny::tagList(
         hostess_ts$get_loader(),
         shiny::br(),
