@@ -55,6 +55,7 @@ mod_user <- function(
     # inputs tagList
     shiny::tagList(
       # first row of inputs, variable and dates
+      shiny::h4(translate_app("user_var_date_title", lang())),
       shiny::fluidRow(
         # user_var
         shiny::column(
@@ -103,15 +104,10 @@ mod_user <- function(
             icon = shiny::icon("y"),
             help_text = translate_app("user_latitude_help", lang())
           ),
-          # shinyWidgets::actionBttn(
-          #   ns("user_ts_update"), translate_app("user_ts_update", lang()),
-          #   icon = shiny::icon("rotate"),
-          #   style = "simple", color = "royal", size = "sm"
-          # )
           bslib::input_task_button(
-            ns("user_ts_update"), translate_app("user_ts_update", lang()),
+            ns("user_ts_update"), translate_app("user_ts_calculate", lang()),
             icon = shiny::icon("rotate"),
-            label_busy = translate_app("user_ts_update_calculating", lang())
+            label_busy = translate_app("user_ts_refresh_calculating", lang())
           )
         ),
         # user_date
