@@ -39,6 +39,14 @@ mod_ts <- function(
   # get the ns
   ns <- session$ns
 
+  # hostess ready
+  hostess_ts <- waiter::Hostess$new(infinite = TRUE)
+  hostess_ts$set_loader(waiter::hostess_loader(
+    svg = "images/hostess_image.svg",
+    progress_type = "fill",
+    fill_direction = "ltr"
+  ))
+
   # extended task for ts_data, to avoid blocking the app while calculating the
   # time series
   # 1. create extended task with mirai function
@@ -113,6 +121,36 @@ mod_ts <- function(
   }) |>
     shiny::bindEvent(user_inputs$user_ts_update)
 
+  # 3. observer for hostess (copied from bslib bind_task_button code)
+  was_running <- FALSE
+  shiny::observe({
+    waiter_ts <- waiter::Waiter$new(
+      id = ns('output_ts_temp'),
+      html = shiny::tagList(
+        hostess_ts$get_loader(),
+        shiny::br(),
+        shiny::p(glue::glue(
+          "{translate_app('getting_data_for', lang())} {shiny::isolate(user_inputs$user_longitude)} - {shiny::isolate(user_inputs$user_latitude)}"
+        )),
+        shiny::p(translate_app("please_wait", lang()))
+      ),
+      color = '#E8EAEB'
+    )
+    running <- ts_data$status() == "running"
+    if (running != was_running) {
+      was_running <<- running
+      if (running) {
+        # show hostess
+        waiter_ts$show()
+        hostess_ts$start()
+      } else {
+        waiter_ts$hide()
+        hostess_ts$close()
+      }
+    }
+  }, priority = 1000)
+
+  # 4. use $result() to get the extended task result when calculated
   # echart outputs (temp, rh and rad-prec-pet (rpp))
   output$output_ts_temp <- echarts4r::renderEcharts4r({
     ts_data$result() |>
@@ -123,7 +161,6 @@ mod_ts <- function(
       echarts4r::e_datazoom(toolbox = FALSE, type = "slider", show = FALSE) |>
       echarts4r::e_group("timeseries")
   })
-
   output$output_ts_rh <- echarts4r::renderEcharts4r({
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
@@ -133,7 +170,6 @@ mod_ts <- function(
       echarts4r::e_datazoom(toolbox = FALSE, type = "slider", show = FALSE) |>
       echarts4r::e_group("timeseries")
   })
-
   output$output_ts_rpp <- echarts4r::renderEcharts4r({
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
