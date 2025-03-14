@@ -23,6 +23,8 @@ mod_ts(input, output, session, user_inputs, duckdb_proxy, lang)
 \item{duckdb_proxy}{duckdb connection}
 
 \item{lang}{lang selected}
+
+\item{button_session}{session object from user inputs module}
 }
 \description{
 Shiny module to show the variables timeseries

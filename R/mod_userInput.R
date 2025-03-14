@@ -103,10 +103,15 @@ mod_user <- function(
             icon = shiny::icon("y"),
             help_text = translate_app("user_latitude_help", lang())
           ),
-          shinyWidgets::actionBttn(
+          # shinyWidgets::actionBttn(
+          #   ns("user_ts_update"), translate_app("user_ts_update", lang()),
+          #   icon = shiny::icon("rotate"),
+          #   style = "simple", color = "royal", size = "sm"
+          # )
+          bslib::input_task_button(
             ns("user_ts_update"), translate_app("user_ts_update", lang()),
             icon = shiny::icon("rotate"),
-            style = "simple", color = "royal", size = "sm"
+            label_busy = translate_app("user_ts_update_calculating", lang())
           )
         ),
         # user_date
@@ -126,6 +131,13 @@ mod_user <- function(
     user_reactives$user_longitude <- input$user_longitude
     user_reactives$user_latitude <- input$user_latitude
     user_reactives$user_ts_update <- input$user_ts_update
+    user_reactives$user_inputs_session <- session
   })
-  return(user_reactives)
+
+  # return also the session for binding the bslib button to the Extended Task
+  # later
+  return(list(
+    user_reactives = user_reactives,
+    user_inputs_session = session
+  ))
 }

@@ -23,6 +23,7 @@ mod_tsOutput <- function(id) {
 #' @param output internal
 #' @param session internal
 #' @param user_inputs reactiveValues containing the user selected inputs
+#' @param button_session session object from user inputs module
 #' @param duckdb_proxy duckdb connection
 #' @param lang lang selected
 #'
@@ -31,88 +32,90 @@ mod_tsOutput <- function(id) {
 #' @rdname mod_tsOutput
 mod_ts <- function(
   input, output, session,
-  user_inputs, duckdb_proxy,
-  lang
+  user_inputs,
+  button_session,
+  duckdb_proxy, lang
 ) {
   # get the ns
   ns <- session$ns
 
-  # hostess ready
-  hostess_ts <- waiter::Hostess$new(infinite = TRUE)
-  hostess_ts$set_loader(waiter::hostess_loader(
-    svg = "images/hostess_image.svg",
-    progress_type = "fill",
-    fill_direction = "ltr"
-  ))
-
-  # update the data on input change (only refresh, not lang long)
-  ts_data <- shiny::reactive({
+  # extended task for ts_data, to avoid blocking the app while calculating the
+  # time series
+  # 1. create extended task with mirai function
+  ts_data <- shiny::ExtendedTask$new(
+    \(...) {
+      mirai::mirai({
+        # duckdb conn
+        duckdb_parquet <- duckdb::dbConnect(duckdb::duckdb())
+        withr::defer(duckdb::dbDisconnect(duckdb_parquet))
+        install_httpfs_statement <- glue::glue_sql(
+          .con = duckdb_parquet,
+          "INSTALL httpfs;"
+        )
+        httpfs_statement <- glue::glue_sql(
+          .con = duckdb_parquet,
+          "LOAD httpfs;"
+        )
+        DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
+        DBI::dbExecute(duckdb_parquet, httpfs_statement)
+        # parquet files to read (last year)
+        parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
+          purrr::map_chr(
+            .f = \(i_date) {
+              glue::glue("https://data-emf.creaf.cat/public/parquet/daily_interpolated_meteo/year={lubridate::year(i_date)}/month={lubridate::month(i_date)}/day={lubridate::day(i_date)}/part-0.parquet")
+            }
+          )
+        parquet_files_array <- glue::glue(
+          '[{glue::glue_sql(.con = duckdb_parquet, "{parquet_files_vector}") |> glue::glue_sql_collapse(sep = ", ")}]'
+        )
+        # user points bbox (500^2)
+        coords_bbox <- dplyr::tibble(
+          x = user_longitude, y = user_latitude
+        ) |>
+          sf::st_as_sf(coords = c("x", "y"), crs = 4326) |>
+          sf::st_transform(crs = 25830) |>
+          sf::st_buffer(250) |>
+          sf::st_bbox()
+        # duckdb sql query
+        ts_query <- glue::glue(
+          # .con = duckdb_parquet,
+          "SELECT 
+            dates,
+            avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal')),
+            first(geom_text) AS geom_text
+          FROM read_parquet({parquet_files_array})
+          WHERE geom.x > {coords_bbox$xmin} AND
+            geom.x < {coords_bbox$xmax} AND
+            geom.y > {coords_bbox$ymin} AND
+            geom.y < {coords_bbox$ymax}
+          GROUP BY dates;"
+        )
+        # return the result of the query ordered by dates
+        DBI::dbGetQuery(duckdb_parquet, ts_query) |>
+          dplyr::arrange(dates)
+      }, ...)
+    }
+  ) |>
+    bslib::bind_task_button("user_ts_update", session = button_session)
+  # 2. create an observer, bind it to the action button and invoke the
+  # extended task
+  shiny::observe({
+    # validate inputs
     shiny::validate(
       shiny::need(user_inputs$user_latitude, "Missing latitude"),
       shiny::need(user_inputs$user_longitude, "Missing longitude")
     )
-
-    # show hostess
-    waiter_ts <- waiter::Waiter$new(
-      id = ns("output_ts_temp"),
-      html = shiny::tagList(
-        hostess_ts$get_loader(),
-        shiny::br(),
-        shiny::p(glue::glue(
-          "{translate_app('getting_data_for', lang())} {user_inputs$longitude} - {user_inputs$user_latitude}"
-        )),
-        shiny::p(translate_app("please_wait", lang()))
-      ),
-      color = "#E8EAEB"
+    # invoke extended task
+    ts_data$invoke(
+      user_longitude = user_inputs$user_longitude,
+      user_latitude = user_inputs$user_latitude
     )
-    waiter_ts$show()
-    on.exit(waiter_ts$hide(), add = TRUE)
-    hostess_ts$start()
-    on.exit(hostess_ts$close(), add = TRUE)
-
-    parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
-      purrr::map_chr(
-        .f = \(i_date) {
-          glue::glue("https://data-emf.creaf.cat/public/parquet/daily_interpolated_meteo/year={lubridate::year(i_date)}/month={lubridate::month(i_date)}/day={lubridate::day(i_date)}/part-0.parquet")
-        }
-      )
-    parquet_files_array <- glue::glue(
-      '[{glue::glue_sql(.con = duckdb_proxy, "{parquet_files_vector}") |> glue::glue_sql_collapse(sep = ", ")}]'
-    )
-    coords_bbox <- dplyr::tibble(
-      x = user_inputs$user_longitude, y = user_inputs$user_latitude
-    ) |>
-      sf::st_as_sf(coords = c("x", "y"), crs = 4326) |>
-      sf::st_transform(crs = 25830) |>
-      sf::st_buffer(250) |>
-      sf::st_bbox()
-
-    ts_query <- glue::glue(
-      # .con = duckdb_proxy,
-      "SELECT 
-        dates,
-        avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal')),
-        first(geom_text) AS geom_text
-      FROM read_parquet({parquet_files_array})
-      WHERE geom.x > {coords_bbox$xmin} AND
-        geom.x < {coords_bbox$xmax} AND
-        geom.y > {coords_bbox$ymin} AND
-        geom.y < {coords_bbox$ymax}
-      GROUP BY dates;"
-    )
-
-    DBI::dbGetQuery(duckdb_proxy, ts_query) |>
-      dplyr::arrange(dates)
   }) |>
-    shiny::bindCache(
-      user_inputs$user_longitude, user_inputs$user_latitude,
-      cache = "session"
-    ) |>
     shiny::bindEvent(user_inputs$user_ts_update)
 
   # echart outputs (temp, rh and rad-prec-pet (rpp))
   output$output_ts_temp <- echarts4r::renderEcharts4r({
-    ts_data() |>
+    ts_data$result() |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_area(MaxTemperature) |>
       echarts4r::e_area(MeanTemperature) |>
@@ -122,7 +125,7 @@ mod_ts <- function(
   })
 
   output$output_ts_rh <- echarts4r::renderEcharts4r({
-    ts_data() |>
+    ts_data$result() |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_area(MaxRelativeHumidity) |>
       echarts4r::e_area(MeanRelativeHumidity) |>
@@ -132,7 +135,7 @@ mod_ts <- function(
   })
 
   output$output_ts_rpp <- echarts4r::renderEcharts4r({
-    ts_data() |>
+    ts_data$result() |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_area(Radiation) |>
       echarts4r::e_area(PET) |>

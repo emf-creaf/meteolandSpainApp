@@ -51,6 +51,10 @@ meteoland_spain_app <- function() {
     )
   )
 
+  #### Mirai daemons ####
+  mirai::daemons(2)
+  shiny::onStop(function() {mirai::daemons(0)})
+
   #### JS scripts needed ####
 
   #### UI ####
@@ -141,10 +145,15 @@ meteoland_spain_app <- function() {
       mod_user, 'user_input', lang
     )
     map_reactives <- shiny::callModule(
-      mod_map, 'map_output', user_reactives, duckdb_proxy, lang
+      mod_map, 'map_output',
+      user_reactives$user_reactives,
+      duckdb_proxy, lang
     )
     ts_reactives <- shiny::callModule(
-      mod_ts, 'ts_output', user_reactives, duckdb_proxy, lang
+      mod_ts, 'ts_output',
+      user_reactives$user_reactives,
+      user_reactives$user_inputs_session,
+      duckdb_proxy, lang
     )
 
     # tab translations
