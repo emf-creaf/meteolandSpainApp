@@ -90,21 +90,21 @@ mod_user <- function(
         shiny::column(
           width = 6,
           shinyWidgets::numericInputIcon(
-            "user_longitude", translate_app("user_longitude", lang()),
+            ns("user_longitude"), translate_app("user_longitude", lang()),
             value = -5.641,
             min = -9.500, max = 4, step = 0.001,
             icon = shiny::icon("x"),
             help_text = translate_app("user_longitude_help", lang())
           ),
           shinyWidgets::numericInputIcon(
-            "user_latitude", translate_app("user_latitude", lang()),
+            ns("user_latitude"), translate_app("user_latitude", lang()),
             value = 42.662,
             min = 35.500, max = 44, step = 0.001,
             icon = shiny::icon("y"),
             help_text = translate_app("user_latitude_help", lang())
           ),
           shinyWidgets::actionBttn(
-            "user_ts_update", translate_app("user_ts_update", lang()),
+            ns("user_ts_update"), translate_app("user_ts_update", lang()),
             icon = shiny::icon("rotate"),
             style = "simple", color = "royal", size = "sm"
           )
