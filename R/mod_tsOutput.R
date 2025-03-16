@@ -165,13 +165,7 @@ mod_ts <- function(
       echarts4r::e_line(MinTemperature, symbol = "none") |>
       echarts4r::e_line(MeanTemperature, symbol = "none") |>
       echarts4r::e_line(MaxTemperature, symbol = "none") |>
-      echarts4r::e_mark_point("MaxTemperature", data = list(name = "Max", type = "max")) |>
-      echarts4r::e_mark_point("MinTemperature", data = list(name = "Min", type = "min")) |>
-      echarts4r::e_mark_point("MeanTemperature", data = list(name = "Mean", type = "average")) |>
-      echarts4r::e_tooltip(trigger = "axis") |>
-      echarts4r::e_datazoom(toolbox = FALSE, type = "slider", show = FALSE) |>
-      echarts4r::e_group("timeseries") |>
-      echarts4r::e_theme("emf_colors")
+      echarts_formatter()
   })
   output$output_ts_rh <- echarts4r::renderEcharts4r({
     ts_data$result() |>
@@ -179,26 +173,14 @@ mod_ts <- function(
       echarts4r::e_line(MaxRelativeHumidity, symbol = "none") |>
       echarts4r::e_line(MeanRelativeHumidity, symbol = "none") |>
       echarts4r::e_line(MinRelativeHumidity, symbol = "none") |>
-      echarts4r::e_mark_point("MaxRelativeHumidity", data = list(name = "Max", type = "max")) |>
-      echarts4r::e_mark_point("MinRelativeHumidity", data = list(name = "Min", type = "min")) |>
-      echarts4r::e_mark_point("MeanRelativeHumidity", data = list(name = "Mean", type = "average")) |>
-      echarts4r::e_tooltip(trigger = "axis") |>
-      echarts4r::e_datazoom(toolbox = FALSE, type = "slider", show = FALSE) |>
-      echarts4r::e_group("timeseries") |>
-      echarts4r::e_theme("emf_colors")
+      echarts_formatter()
   })
   output$output_ts_rpp <- echarts4r::renderEcharts4r({
-    browser()
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_bar(Precipitation) |>
       echarts4r::e_line(PET, symbol = "none") |>
       echarts4r::e_line(Radiation, symbol = "none") |>
-      echarts4r::e_mark_point("Radiation", data = list(name = "Max", type = "max")) |>
-      echarts4r::e_tooltip(trigger = "axis") |>
-      echarts4r::e_datazoom(toolbox = FALSE, type = "slider") |>
-      echarts4r::e_group("timeseries") |>
-      echarts4r::e_connect_group("timeseries") |>
-      echarts4r::e_theme("emf_colors")
+      echarts_formatter(bottom = TRUE)
   })
 }

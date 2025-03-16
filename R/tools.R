@@ -38,3 +38,33 @@ translate_app <- function(id, lang, thesaurus = apps_translations) {
   # get the lang translation
   return(dplyr::pull(id_row, glue::glue("translation_{lang}")))
 }
+
+#' echarts formatter
+#'
+#' Apply the common format (legend, tooltip, theme...) to timeseries (echarts)
+#'
+#' @param bottom Logical. The bottom ts needs to connect the group and also
+#'   show the datazoom slider
+echarts_formatter <- function(echart, bottom = FALSE) {
+
+  if (isTRUE(bottom)) {
+    echart |>
+      echarts4r::e_tooltip(trigger = "axis") |>
+      echarts4r::e_datazoom(toolbox = FALSE, type = "slider") |>
+      echarts4r::e_group("timeseries") |>
+      echarts4r::e_connect_group("timeseries") |>
+      echarts4r::e_theme("emf_colors") |>
+      echarts4r::e_axis(axis = "x", axisLine = list(lineStyle = list(color = "#F8F9FA"))) |>
+      echarts4r::e_axis(axis = "y", axisLine = list(lineStyle = list(color = "#F8F9FA"))) |>
+      echarts4r::e_legend(textStyle = list(color = "#F8F9FA"))
+  } else {
+    echart |>
+      echarts4r::e_tooltip(trigger = "axis") |>
+      echarts4r::e_datazoom(toolbox = FALSE, type = "slider", show = FALSE) |>
+      echarts4r::e_group("timeseries") |>
+      echarts4r::e_theme("emf_colors") |>
+      echarts4r::e_axis(axis = "x", axisLine = list(lineStyle = list(color = "#F8F9FA"))) |>
+      echarts4r::e_axis(axis = "y", axisLine = list(lineStyle = list(color = "#F8F9FA"))) |>
+      echarts4r::e_legend(textStyle = list(color = "#F8F9FA"))
+  }
+}
