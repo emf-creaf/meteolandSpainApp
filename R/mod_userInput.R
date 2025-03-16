@@ -57,9 +57,18 @@ mod_user <- function(
       # first row of inputs, variable and dates
       shiny::h4(translate_app("user_var_date_title", lang())),
       shiny::fluidRow(
-        # user_var
         shiny::column(
-          width = 6,
+          width = 12,
+          # user_var
+          shinyWidgets::airDatepickerInput(
+            ns("user_date"), label = translate_app("user_date", lang()),
+            value = user_date_choices[length(user_date_choices)],
+            multiple = FALSE, range = FALSE,
+            minDate = user_date_choices[1],
+            maxDate = user_date_choices[length(user_date_choices)],
+            firstDay = 1
+          ),
+          # user_date
           shinyWidgets::pickerInput(
             ns("user_var"), label = translate_app("user_var", lang()),
             choices = user_var_choices,
@@ -70,26 +79,14 @@ mod_user <- function(
               tickIcon = "glyphicon-ok-sign"
             )
           )
-        ),
-        # user_date
-        shiny::column(
-          width = 6,
-          shinyWidgets::airDatepickerInput(
-            ns("user_date"), label = translate_app("user_date", lang()),
-            value = user_date_choices[length(user_date_choices)],
-            multiple = FALSE, range = FALSE,
-            minDate = user_date_choices[1],
-            maxDate = user_date_choices[length(user_date_choices)],
-            firstDay = 1
-          )
         )
       ), # END of first row of inputs
       # second row of inputs, time series
       shiny::h4(translate_app("user_ts_title", lang())),
       shiny::fluidRow(
-        # user_var
         shiny::column(
-          width = 6,
+          width = 12,
+          # user_longitude
           shinyWidgets::numericInputIcon(
             ns("user_longitude"), translate_app("user_longitude", lang()),
             value = -5.641,
@@ -97,6 +94,7 @@ mod_user <- function(
             icon = shiny::icon("x"),
             help_text = translate_app("user_longitude_help", lang())
           ),
+          # user_latitude
           shinyWidgets::numericInputIcon(
             ns("user_latitude"), translate_app("user_latitude", lang()),
             value = 42.662,
@@ -104,15 +102,13 @@ mod_user <- function(
             icon = shiny::icon("y"),
             help_text = translate_app("user_latitude_help", lang())
           ),
+          # user_ts_calculate
           bslib::input_task_button(
             ns("user_ts_update"), translate_app("user_ts_calculate", lang()),
             icon = shiny::icon("rotate"),
             label_busy = translate_app("user_ts_refresh_calculating", lang())
-          )
-        ),
-        # user_date
-        shiny::column(
-          width = 6,
+          ),
+          # info placeholder
           shiny::p("TODO - Placeholder for the info about map resolution and waiting time")
         )
       ) # END of second row of inputs
