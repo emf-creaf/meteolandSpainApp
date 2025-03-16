@@ -132,18 +132,20 @@ meteoland_spain_app <- function() {
 
 
         shiny::sidebarLayout(
-          position = "right", fluid = TRUE,
+          position = "left", fluid = TRUE,
           sidebarPanel = shiny::sidebarPanel(
+            width = 2,
             mod_userInput("user_input")
           ), # END of sidebarPanel
           mainPanel = shiny::mainPanel(
+            width = 10,
             shiny::fluidRow(
               shiny::column(
-                width = 8,
+                width = 7,
                 mod_mapOutput("map_output")
               ),
               shiny::column(
-                width = 4,
+                width = 5,
                 mod_tsOutput("ts_output")
               )
             )
