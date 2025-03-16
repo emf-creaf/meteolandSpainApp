@@ -23,6 +23,7 @@ Imports:
     sf,
     shiny,
     shinyWidgets,
+    waiter,
     withr
 Depends: 
     R (>= 3.5)
