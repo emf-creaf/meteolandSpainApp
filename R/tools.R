@@ -43,6 +43,7 @@ translate_app <- function(id, lang, thesaurus = apps_translations) {
 #'
 #' Apply the common format (legend, tooltip, theme...) to timeseries (echarts)
 #'
+#' @param echart echarts4r object to format
 #' @param bottom Logical. The bottom ts needs to connect the group and also
 #'   show the datazoom slider
 echarts_formatter <- function(echart, bottom = FALSE) {

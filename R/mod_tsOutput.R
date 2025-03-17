@@ -14,7 +14,7 @@ mod_tsOutput <- function(id) {
       shiny::div(
         id = ns("ts_hostess"),
         echarts4r::e_theme_register(
-          '{"color":["#14ABCC","#7CC69A","#E3DF68"],"backgroundColor":"#191A1A"}',
+          '{"color":["#14ABCC","#7CC69A","#E3DF68","#ED51C1"],"backgroundColor":"#191A1A"}',
           name = "emf_colors"
         ),
         echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 195),
@@ -165,25 +165,56 @@ mod_ts <- function(
   output$output_ts_temp <- echarts4r::renderEcharts4r({
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
-      echarts4r::e_line(MinTemperature, symbol = "none") |>
-      echarts4r::e_line(MeanTemperature, symbol = "none") |>
-      echarts4r::e_line(MaxTemperature, symbol = "none") |>
+      echarts4r::e_line(
+        MinTemperature, symbol = "none",
+        name = translate_app("MinTemperature", lang())
+      ) |>
+      echarts4r::e_line(
+        MeanTemperature, symbol = "none",
+        name = translate_app("MeanTemperature", lang())
+      ) |>
+      echarts4r::e_line(
+        MaxTemperature, symbol = "none",
+        name = translate_app("MaxTemperature", lang())
+      ) |>
       echarts_formatter()
   })
   output$output_ts_rh <- echarts4r::renderEcharts4r({
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
-      echarts4r::e_line(MaxRelativeHumidity, symbol = "none") |>
-      echarts4r::e_line(MeanRelativeHumidity, symbol = "none") |>
-      echarts4r::e_line(MinRelativeHumidity, symbol = "none") |>
+      echarts4r::e_line(
+        MaxRelativeHumidity, symbol = "none",
+        name = translate_app("MaxRelativeHumidity", lang())
+      ) |>
+      echarts4r::e_line(
+        MeanRelativeHumidity, symbol = "none",
+        name = translate_app("MeanRelativeHumidity", lang())
+      ) |>
+      echarts4r::e_line(
+        MinRelativeHumidity, symbol = "none",
+        name = translate_app("MinRelativeHumidity", lang())
+      ) |>
       echarts_formatter()
   })
   output$output_ts_rpp <- echarts4r::renderEcharts4r({
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
-      echarts4r::e_bar(Precipitation) |>
-      echarts4r::e_line(PET, symbol = "none") |>
-      echarts4r::e_line(Radiation, symbol = "none") |>
+      echarts4r::e_bar(
+        Precipitation,
+        name = translate_app("Precipitation", lang())
+      ) |>
+      echarts4r::e_line(
+        PET, symbol = "none",
+        name = translate_app("PET", lang())
+      ) |>
+      echarts4r::e_line(
+        Radiation, symbol = "none",
+        name = translate_app("Radiation", lang())
+      ) |>
+      echarts4r::e_line(
+        WindSpeed, symbol = "none",
+        name = translate_app("WindSpeed", lang())
+      ) |>
       echarts_formatter(bottom = TRUE)
   })
 
