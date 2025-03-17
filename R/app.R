@@ -187,7 +187,7 @@ meteoland_spain_app <- function() {
     )
     download_reactives <- shiny::callModule(
       mod_download, "download_output",
-      user_reactives$user_reactives,
+      user_reactives$user_reactives, ts_reactives,
       lang
     )
 
@@ -207,7 +207,7 @@ meteoland_spain_app <- function() {
       user_reactives$user_reactives$user_latitude
     })
     output$debug3 <- shiny::renderPrint({
-      user_reactives$user_reactives$user_longitude
+      ts_reactives$ts_data$result()
     })
   } # END of server function
 

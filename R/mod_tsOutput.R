@@ -96,8 +96,7 @@ mod_ts <- function(
           # .con = duckdb_parquet,
           "SELECT 
             dates,
-            avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal')),
-            first(geom_text) AS geom_text
+            avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
           FROM read_parquet({parquet_files_array})
           WHERE geom.x > {coords_bbox$xmin} AND
             geom.x < {coords_bbox$xmax} AND
@@ -107,7 +106,11 @@ mod_ts <- function(
         )
         # return the result of the query ordered by dates
         DBI::dbGetQuery(duckdb_parquet, ts_query) |>
-          dplyr::arrange(dates)
+          dplyr::arrange(dates) |>
+          dplyr::mutate(
+            point_latitude = user_latitude,
+            point_longitude = user_longitude
+          )
       }, ...)
     }
   ) |>
@@ -183,4 +186,11 @@ mod_ts <- function(
       echarts4r::e_line(Radiation, symbol = "none") |>
       echarts_formatter(bottom = TRUE)
   })
+
+  # Collect reactives to pass to the main app or other modules
+  ts_reactives <- shiny::reactiveValues()
+  shiny::observe({
+    ts_reactives$ts_data <- ts_data
+  })
+  return(ts_reactives)
 }

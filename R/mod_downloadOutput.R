@@ -20,6 +20,7 @@ mod_downloadOutput <- function(id) {
 #' @param output internal
 #' @param session internal
 #' @param user_inputs reactiveValues containing the user selected inputs
+#' @param ts_outputs reactiveValues containing the ts calculated ouputs
 #' @param lang lang selected
 #'
 #' @export
@@ -27,7 +28,7 @@ mod_downloadOutput <- function(id) {
 #' @rdname mod_downloadOutput
 mod_download <- function(
   input, output, session,
-  user_inputs,
+  user_inputs, ts_outputs,
   lang
 ) {
   output$mod_download_container <- shiny::renderUI({
@@ -42,7 +43,7 @@ mod_download <- function(
           shiny::h4(translate_app("download_maps_title", lang())),
           shiny::p(translate_app("download_maps_text", lang())),
           shiny::actionButton(
-            "download_maps_link", translate_app("download_maps_link", lang()),
+            ns("download_maps_link"), translate_app("download_maps_link", lang()),
             icon = shiny::icon("up-right-from-square"),
             onclick = "window.open('https://data-emf.creaf.cat/public/gpkg/daily_interpolated_meteo/', '_blank')"
           )
@@ -52,12 +53,26 @@ mod_download <- function(
           width = 4,
           shiny::h4(translate_app("download_ts_title", lang())),
           shiny::p(translate_app("download_ts_text", lang())),
-          shiny::actionButton(
-            "download_ts_button", translate_app("download_ts_button", lang()),
+          shiny::downloadButton(
+            ns("download_ts_button"), translate_app("download_ts_button", lang()),
             icon = shiny::icon("download")
           )
-        )
+        ) # END of timeseries download column
       )
     ) # END of ouput tagList
   }) # END of renderUI
+
+  # Dowload button logic
+  output$download_ts_button <- shiny::downloadHandler(
+    filename = glue::glue(
+      "meteoland_timeseries_{format(Sys.time(), '%Y%m%d%H%M%S')}.csv"
+    ),
+    content = function(file) {
+      shiny::validate(
+        shiny::need(user_inputs$user_ts_update > 0, "no ts calculated yet")
+      )
+      ts_outputs$ts_data$result() |>
+        write.csv(file)
+    }
+  )
 }
