@@ -37,6 +37,8 @@ app_translations <- tibble::tribble(
   "download_ts_title", "Descarrega de sèries temporals", "Time series download", "Descarga de series temporales",
   "download_ts_text", "", "PLACEHOLDER for timeseries text", "",
   "download_ts_button", "", "PLACEHOLDER", "",
+  # map outputs
+  "map_tooltip", "Coordenades seleccionades", "Selected coordinates", "Coordenadas seleccionadas",
   # waiting messages
   "getting_data_for", "Obtenint dades per", "Getting data for", "Obteniendo datos para",
   "please_wait", "Per favor, espere...", "Please wait...", "Por favor, espere...",

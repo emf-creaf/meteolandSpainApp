@@ -207,7 +207,7 @@ meteoland_spain_app <- function() {
       user_reactives$user_reactives$user_latitude
     })
     output$debug3 <- shiny::renderPrint({
-      ts_reactives$ts_data$result()
+      user_reactives$user_reactives$user_longitude
     })
   } # END of server function
 

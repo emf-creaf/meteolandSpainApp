@@ -103,10 +103,27 @@ mod_map <- function(
     ) |>
     shiny::bindEvent(user_inputs$user_var, user_inputs$user_date)
 
+  ts_point_data <- shiny::reactive({
+    # validate inputs
+    shiny::validate(
+      shiny::need(user_inputs$user_latitude, "Missing latitude"),
+      shiny::need(user_inputs$user_longitude, "Missing longitude")
+    )
+
+    data.frame(
+      lat = user_inputs$user_latitude,
+      lon = user_inputs$user_longitude,
+      fill = "#ED51C1FF",
+      id = "selected_coords",
+      tooltip_translated = translate_app("map_tooltip", lang())
+    )
+  })
+
   # Updating the map
   shiny::observe({
     # get the data
     bitmap_sel <- bitmap_data()
+    ts_point_sel <- ts_point_data()
     # create the custom legend to show with the bitmap
     legend_js <- mapdeck::legend_element(
       variables = rev(round(seq(
@@ -140,6 +157,13 @@ mod_map <- function(
         ),
         update_view = FALSE, focus_layer = FALSE,
         transparent_colour = "#00000000"
+      ) |>
+      mapdeck::add_scatterplot(
+        data = ts_point_sel,
+        lon = "lon", lat = "lat", id = "id",
+        fill_colour = "fill", tooltip = "tooltip_translated",
+        radius = 500, radius_min_pixels = 5, radius_max_pixels = 10,
+        update_view = FALSE, focus_layer = FALSE
       ) |>
       mapdeck::add_legend(legend = legend_js, layer_id = "custom_legend")
   })
