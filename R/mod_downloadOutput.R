@@ -43,10 +43,20 @@ mod_download <- function(
           shiny::p(translate_app("download_maps_text", lang())),
           shiny::actionButton(
             "download_maps_link", translate_app("download_maps_link", lang()),
-            icon = shiny::icon("download"),
+            icon = shiny::icon("up-right-from-square"),
             onclick = "window.open('https://data-emf.creaf.cat/public/gpkg/daily_interpolated_meteo/', '_blank')"
           )
-        ) # END of maps download column
+        ), # END of maps download column
+        # timeseries download (csv)
+        shiny::column(
+          width = 4,
+          shiny::h4(translate_app("download_ts_title", lang())),
+          shiny::p(translate_app("download_ts_text", lang())),
+          shiny::actionButton(
+            "download_ts_button", translate_app("download_ts_button", lang()),
+            icon = shiny::icon("download")
+          )
+        )
       )
     ) # END of ouput tagList
   }) # END of renderUI
