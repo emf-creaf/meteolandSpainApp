@@ -122,7 +122,6 @@ meteoland_spain_app <- function() {
           # top = 100, left = 100, rigth = 'auto', bottom = 'auto',
           top = 'auto', left = 10, right = 'auto', bottom = 15,
           # top = 60, left = 'auto', right = 50, bottom = 'auto',
-        
           shiny::h3("DEBUG"),
           shiny::textOutput('debug1'),
           shiny::textOutput('debug2'),
@@ -151,7 +150,13 @@ meteoland_spain_app <- function() {
             )
           ) # END of mainPanel
         ) # END of sidebarLayout
-      ) # END of main (Explore) tab
+      ), # END of main (Explore) tab
+      # Download tab
+      shiny::tabPanel(
+        title = mod_tab_translateOutput("download_tab_translation"),
+        icon = shiny::icon("save"),
+        mod_downloadOutput("download_output")
+      ) # END of donwload tab
     ) # END of navbarPage
   ) # END of UI tagList
 
@@ -180,12 +185,19 @@ meteoland_spain_app <- function() {
       user_reactives$user_inputs_session,
       duckdb_proxy, lang
     )
+    download_reactives <- shiny::callModule(
+      mod_download, "download_output",
+      user_reactives$user_reactives,
+      lang
+    )
 
     # tab translations
-    shiny::callModule(
-      mod_tab_translate, "main_tab_translation",
-      "main_tab_translation", lang
-    )
+    c("main_tab_translation", "download_tab_translation") |>
+      purrr::walk(
+        .f = \(mod_id) {
+          shiny::callModule(mod_tab_translate, mod_id, mod_id, lang)
+        }
+      )
 
     # debug #####
     output$debug1 <- shiny::renderPrint({

@@ -12,7 +12,6 @@ mod_userInput <- function(id) {
 
   # UI ####
   shiny::tagList(
-    shiny::br(),
     shiny::uiOutput(
       ns('mod_user_container')
     )

@@ -4,6 +4,7 @@ app_translations <- tibble::tribble(
   ~text_id, ~translation_cat, ~translation_eng, ~translation_spa,
   # tabs translations
   "main_tab_translation", "Explora", "Explore", "Explora",
+  "download_tab_translation", "Descarrega", "Download", "Descarga",
   # variables
   "MeanTemperature", "Temperatura mitjana [°C]", "Mean Temperature [°C]", "Temperatura media [°C]",
   "MinTemperature", "Temperatura mínima [°C]", "Min Temperature [°C]", "Temperatura mínima [°C]",
@@ -29,6 +30,10 @@ app_translations <- tibble::tribble(
   "user_ts_calculate", "Calcular sèries temporals", "Calculate time series", "Calcular series temporales",
   "user_ts_refresh", "Recalcular sèries temporals", "Refresh time series", "Recalcular series temporales",
   "user_ts_refresh_calculating", "Calculant, això pot portar un temps...", "Calculating, this can take a while...", "Calculando, esto puede llevar un tiempo...",
+  # download outputs
+  "download_maps_title", "Descarrega de mapas", "Maps download", "Descarga de mapas",
+  "download_maps_text", "", "PLACEHOLDER for download maps text", "",
+  "download_maps_link", "", "Go to files", "",
   # waiting messages
   "getting_data_for", "Obtenint dades per", "Getting data for", "Obteniendo datos para",
   "please_wait", "Per favor, espere...", "Please wait...", "Por favor, espere...",
