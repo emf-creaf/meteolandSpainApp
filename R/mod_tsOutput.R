@@ -17,9 +17,9 @@ mod_tsOutput <- function(id) {
           '{"color":["#14ABCC","#7CC69A","#E3DF68"],"backgroundColor":"#191A1A"}',
           name = "emf_colors"
         ),
-        echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 200),
-        echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 200),
-        echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 200)
+        echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 195),
+        echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 195),
+        echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 210)
       )
     )
   )
