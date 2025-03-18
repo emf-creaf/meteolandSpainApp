@@ -11,11 +11,7 @@ mod_userInput <- function(id) {
   ns <- shiny::NS(id)
 
   # UI ####
-  shiny::tagList(
-    shiny::uiOutput(
-      ns('mod_user_container')
-    )
-  )
+  shiny::tagList(shiny::uiOutput(ns('mod_user_container')))
 }
 
 #' mod_user server function
@@ -58,7 +54,7 @@ mod_user <- function(
       shiny::fluidRow(
         shiny::column(
           width = 12,
-          # user_var
+          # user_date
           shinyWidgets::airDatepickerInput(
             ns("user_date"), label = translate_app("user_date", lang()),
             value = user_date_choices[length(user_date_choices)],
@@ -67,7 +63,7 @@ mod_user <- function(
             maxDate = user_date_choices[length(user_date_choices)],
             firstDay = 1
           ),
-          # user_date
+          # user_var
           shinyWidgets::pickerInput(
             ns("user_var"), label = translate_app("user_var", lang()),
             choices = user_var_choices,

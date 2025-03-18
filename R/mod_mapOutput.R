@@ -8,9 +8,7 @@
 mod_mapOutput <- function(id) {
   # ns
   ns <- shiny::NS(id)
-  shiny::tagList(
-    mapdeck::mapdeckOutput(ns("output_map"), height = 600)
-  )
+  shiny::tagList(mapdeck::mapdeckOutput(ns("output_map"), height = 600))
 }
 
 #' mod_map server function

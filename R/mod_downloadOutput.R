@@ -8,11 +8,7 @@
 mod_downloadOutput <- function(id) {
   # ns
   ns <- shiny::NS(id)
-  shiny::tagList(
-    shiny::uiOutput(
-      ns('mod_download_container')
-    )
-  )
+  shiny::tagList(shiny::uiOutput(ns('mod_download_container')))
 }
 
 #' mod_download server function
