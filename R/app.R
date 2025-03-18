@@ -152,7 +152,13 @@ meteoland_spain_app <- function() {
         title = mod_tab_translateOutput("download_tab_translation"),
         icon = shiny::icon("save"),
         mod_downloadOutput("download_output")
-      ) # END of donwload tab
+      ), # END of donwload tab
+      # Cross validations tab
+      shiny::tabPanel(
+        title = mod_tab_translateOutput("cv_tab_translation"),
+        icon = shiny::icon("check-double"),
+        mod_cvUI("cv_ui")
+      ), # END of cross validations tab
     ) # END of navbarPage
   ) # END of UI tagList
 
@@ -179,16 +185,22 @@ meteoland_spain_app <- function() {
       mod_ts, 'ts_output',
       user_reactives$user_reactives,
       user_reactives$user_inputs_session,
-      duckdb_proxy, lang
+      lang
     )
     download_reactives <- shiny::callModule(
       mod_download, "download_output",
       user_reactives$user_reactives, ts_reactives,
       lang
     )
+    cv_reactives <- shiny::callModule(
+      mod_cv, "cv_ui",
+      lang
+    )
 
     # tab translations
-    c("main_tab_translation", "download_tab_translation") |>
+    c(
+      "main_tab_translation", "download_tab_translation", "cv_tab_translation"
+    ) |>
       purrr::walk(
         .f = \(mod_id) {
           shiny::callModule(mod_tab_translate, mod_id, mod_id, lang)
