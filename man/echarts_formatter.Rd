@@ -7,6 +7,8 @@
 echarts_formatter(echart, bottom = FALSE)
 }
 \arguments{
+\item{echart}{echarts4r object to format}
+
 \item{bottom}{Logical. The bottom ts needs to connect the group and also
 show the datazoom slider}
 }

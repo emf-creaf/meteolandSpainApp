@@ -16,7 +16,6 @@ mod_mapOutput <- function(id) {
 #' @param output internal
 #' @param session internal
 #' @param user_inputs reactiveValues containing the user selected inputs
-#' @param duckdb_proxy duckdb connection
 #' @param lang lang selected
 #'
 #' @export
@@ -24,7 +23,7 @@ mod_mapOutput <- function(id) {
 #' @rdname mod_mapOutput
 mod_map <- function(
   input, output, session,
-  user_inputs, duckdb_proxy,
+  user_inputs,
   lang
 ) {
   # get the ns
@@ -85,15 +84,17 @@ mod_map <- function(
       stringr::str_remove_all("-")
 
     # query
-    bitmap_sel_query <- glue::glue_sql(
-      .con = duckdb_proxy,
-      "SELECT * FROM bitmaps
-      WHERE var = {var_sel} AND date = {date_sel};"
-    )
+    # bitmap_sel_query <- glue::glue_sql(
+    #   .con = duckdb_proxy,
+    #   "SELECT * FROM bitmaps
+    #   WHERE var = {var_sel} AND date = {date_sel};"
+    # )
 
-    # browser()
-    # return the selected bitmap info (base64 string, bbox...)
-    DBI::dbGetQuery(duckdb_proxy, bitmap_sel_query)
+    # # return the selected bitmap info (base64 string, bbox...)
+    # DBI::dbGetQuery(duckdb_proxy, bitmap_sel_query)
+    arrow::open_dataset(Sys.getenv("PARQUET_BITMAPS")) |>
+      dplyr::filter(var == var_sel, date == date_sel) |>
+      dplyr::as_tibble()
   }) |>
     shiny::bindCache(
       user_inputs$user_var, user_inputs$user_date,

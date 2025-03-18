@@ -7,7 +7,7 @@
 \usage{
 mod_tsOutput(id)
 
-mod_ts(input, output, session, user_inputs, button_session, duckdb_proxy, lang)
+mod_ts(input, output, session, user_inputs, button_session, lang)
 }
 \arguments{
 \item{id}{shiny id}
@@ -21,8 +21,6 @@ mod_ts(input, output, session, user_inputs, button_session, duckdb_proxy, lang)
 \item{user_inputs}{reactiveValues containing the user selected inputs}
 
 \item{button_session}{session object from user inputs module}
-
-\item{duckdb_proxy}{duckdb connection}
 
 \item{lang}{lang selected}
 }

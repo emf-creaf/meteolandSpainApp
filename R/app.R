@@ -8,28 +8,28 @@
 #' @export
 meteoland_spain_app <- function() {
   #### duckdb connection ####
-  duckdb_proxy <- duckdb::dbConnect(duckdb::duckdb())
-  # withr::defer(duckdb::dbDisconnect(duckdb_proxy))
-  install_httpfs_statement <- glue::glue_sql(
-    .con = duckdb_proxy,
-    "INSTALL httpfs;"
-  )
-  httpfs_statement <- glue::glue_sql(
-    .con = duckdb_proxy,
-    "LOAD httpfs;"
-  )
-  DBI::dbExecute(duckdb_proxy, install_httpfs_statement)
-  DBI::dbExecute(duckdb_proxy, httpfs_statement)
+  # duckdb_proxy <- duckdb::dbConnect(duckdb::duckdb())
+  # # withr::defer(duckdb::dbDisconnect(duckdb_proxy))
+  # install_httpfs_statement <- glue::glue_sql(
+  #   .con = duckdb_proxy,
+  #   "INSTALL httpfs;"
+  # )
+  # httpfs_statement <- glue::glue_sql(
+  #   .con = duckdb_proxy,
+  #   "LOAD httpfs;"
+  # )
+  # DBI::dbExecute(duckdb_proxy, install_httpfs_statement)
+  # DBI::dbExecute(duckdb_proxy, httpfs_statement)
 
-  #### Pre-loaded data ####
-  # bitmaps
-  bitmaps_query <- glue::glue_sql(
-    .con = duckdb_proxy,
-    "CREATE VIEW bitmaps AS
-      SELECT * FROM
-        read_parquet('https://data-emf.creaf.cat/public/parquet/bitmaps/daily_interpolated_meteo_bitmaps.parquet');"
-  )
-  DBI::dbExecute(duckdb_proxy, bitmaps_query)
+  # #### Pre-loaded data ####
+  # # bitmaps
+  # bitmaps_query <- glue::glue_sql(
+  #   .con = duckdb_proxy,
+  #   "CREATE VIEW bitmaps AS
+  #     SELECT * FROM
+  #       read_parquet('https://data-emf.creaf.cat/public/parquet/bitmaps/daily_interpolated_meteo_bitmaps.parquet');"
+  # )
+  # DBI::dbExecute(duckdb_proxy, bitmaps_query)
 
   #### Language input ####
   shiny::addResourcePath(
@@ -179,7 +179,7 @@ meteoland_spain_app <- function() {
     map_reactives <- shiny::callModule(
       mod_map, 'map_output',
       user_reactives$user_reactives,
-      duckdb_proxy, lang
+      lang
     )
     ts_reactives <- shiny::callModule(
       mod_ts, 'ts_output',

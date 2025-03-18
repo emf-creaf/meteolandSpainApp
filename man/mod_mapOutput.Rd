@@ -7,7 +7,7 @@
 \usage{
 mod_mapOutput(id)
 
-mod_map(input, output, session, user_inputs, duckdb_proxy, lang)
+mod_map(input, output, session, user_inputs, lang)
 }
 \arguments{
 \item{id}{shiny id}
@@ -19,8 +19,6 @@ mod_map(input, output, session, user_inputs, duckdb_proxy, lang)
 \item{session}{internal}
 
 \item{user_inputs}{reactiveValues containing the user selected inputs}
-
-\item{duckdb_proxy}{duckdb connection}
 
 \item{lang}{lang selected}
 }
