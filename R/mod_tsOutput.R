@@ -31,7 +31,6 @@ mod_tsOutput <- function(id) {
 #' @param session internal
 #' @param user_inputs reactiveValues containing the user selected inputs
 #' @param button_session session object from user inputs module
-#' @param duckdb_proxy duckdb connection
 #' @param lang lang selected
 #'
 #' @export
@@ -39,9 +38,8 @@ mod_tsOutput <- function(id) {
 #' @rdname mod_tsOutput
 mod_ts <- function(
   input, output, session,
-  user_inputs,
-  button_session,
-  duckdb_proxy, lang
+  user_inputs, button_session,
+  lang
 ) {
   # get the ns
   ns <- session$ns
