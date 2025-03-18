@@ -74,15 +74,15 @@ mod_ts <- function(
         DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
         DBI::dbExecute(duckdb_parquet, httpfs_statement)
         # parquet files to read (last year)
-        parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
-          purrr::map_chr(
-            .f = \(i_date) {
-              glue::glue("https://data-emf.creaf.cat/public/parquet/daily_interpolated_meteo/year={lubridate::year(i_date)}/month={lubridate::month(i_date)}/day={lubridate::day(i_date)}/part-0.parquet")
-            }
-          )
-        parquet_files_array <- glue::glue(
-          '[{glue::glue_sql(.con = duckdb_parquet, "{parquet_files_vector}") |> glue::glue_sql_collapse(sep = ", ")}]'
-        )
+        # parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
+        #   purrr::map_chr(
+        #     .f = \(i_date) {
+        #       glue::glue("https://data-emf.creaf.cat/public/parquet/daily_interpolated_meteo/year={lubridate::year(i_date)}/month={lubridate::month(i_date)}/day={lubridate::day(i_date)}/part-0.parquet")
+        #     }
+        #   )
+        # parquet_files_array <- glue::glue(
+        #   '[{glue::glue_sql(.con = duckdb_parquet, "{parquet_files_vector}") |> glue::glue_sql_collapse(sep = ", ")}]'
+        # )
         # user points bbox (500^2)
         coords_bbox <- dplyr::tibble(
           x = user_longitude, y = user_latitude
@@ -97,13 +97,25 @@ mod_ts <- function(
           "SELECT 
             dates,
             avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
-          FROM read_parquet({parquet_files_array})
+          FROM '{Sys.getenv('PARQUET_FILES_PATH')}/*/*/*/*.parquet'
           WHERE geom.x > {coords_bbox$xmin} AND
             geom.x < {coords_bbox$xmax} AND
             geom.y > {coords_bbox$ymin} AND
             geom.y < {coords_bbox$ymax}
           GROUP BY dates;"
         )
+        # ts_query <- glue::glue(
+        #   # .con = duckdb_parquet,
+        #   "SELECT 
+        #     dates,
+        #     avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
+        #   FROM read_parquet({parquet_files_array})
+        #   WHERE geom.x > {coords_bbox$xmin} AND
+        #     geom.x < {coords_bbox$xmax} AND
+        #     geom.y > {coords_bbox$ymin} AND
+        #     geom.y < {coords_bbox$ymax}
+        #   GROUP BY dates;"
+        # )
         # return the result of the query ordered by dates
         DBI::dbGetQuery(duckdb_parquet, ts_query) |>
           dplyr::arrange(dates) |>
