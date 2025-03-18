@@ -152,8 +152,8 @@ mod_map <- function(
       mapdeck::add_bitmap(
         image = bitmap_sel$base64_string, layer_id = "bitmap_sel",
         bounds = c(
-          bitmap_sel$left_ext, bitmap_sel$down_ext,
-          bitmap_sel$right_ext, bitmap_sel$up_ext
+          bitmap_sel$left_ext, bitmap_sel$down_ext - 0.06,
+          bitmap_sel$right_ext, bitmap_sel$up_ext - 0.06
         ),
         update_view = FALSE, focus_layer = FALSE,
         transparent_colour = "#00000000"
