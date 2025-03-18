@@ -5,6 +5,7 @@ app_translations <- tibble::tribble(
   # tabs translations
   "main_tab_translation", "Explora", "Explore", "Explora",
   "download_tab_translation", "Descarrega", "Download", "Descarga",
+  "cv_tab_translation", "Validacions creuades", "Cross Validations", "Validaciones cruzadas",
   # variables
   "MeanTemperature", "Temperatura mitjana [°C]", "Mean Temperature [°C]", "Temperatura media [°C]",
   "MinTemperature", "Temperatura mínima [°C]", "Min Temperature [°C]", "Temperatura mínima [°C]",
@@ -18,6 +19,11 @@ app_translations <- tibble::tribble(
   "WindDirection", "Direcció del vent [° des del N]", "Wind Direction [° from N]", "Dirección del viento [° desde N]",
   "ThermalAmplitude", "Amplitud Tèrmica [°C]", "Thermal Amplitude [°C]", "Amplitud Térmica [°C]",
   "PET", "PET [mm]", "PET [mm]", "PET [mm]",
+  # cv stats
+  "bias", "Setge", "Bias", "Sesgo",
+  "relative_bias", "Sesgo relatiu", "Relative bias", "Sesgo relativo",
+  "mae", "Error Absolut Mitjà", "Mean Absolute Error (MAE)", "Error Absoluto Medio (MAE)",
+  "r2", "R quadrat", "R squared", "R cuadrado",
   # user_inputs
   "user_var_date_title", "Mapa", "Map controls", "Mapa",
   "user_var", "Variable:", "Variable:", "Variable:",
@@ -39,6 +45,9 @@ app_translations <- tibble::tribble(
   "download_ts_button", "", "PLACEHOLDER", "",
   # map outputs
   "map_tooltip", "Coordenades seleccionades", "Selected coordinates", "Coordenadas seleccionadas",
+  # cv ui
+  "cv_date", "Data:", "Date:", "Fecha:",
+  "cv_stat", "Estadístic", "Statistic", "Estadístico",
   # waiting messages
   "getting_data_for", "Obtenint dades per", "Getting data for", "Obteniendo datos para",
   "please_wait", "Per favor, espere...", "Please wait...", "Por favor, espere...",
