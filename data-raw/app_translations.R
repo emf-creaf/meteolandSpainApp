@@ -47,7 +47,7 @@ app_translations <- tibble::tribble(
   "map_tooltip", "Coordenades seleccionades", "Selected coordinates", "Coordenadas seleccionadas",
   # cv ui
   "cv_date", "Data:", "Date:", "Fecha:",
-  "cv_stat", "Estadístic", "Statistic", "Estadístico",
+  "cv_var", "Variable:", "Variable:", "Variable:",
   # waiting messages
   "getting_data_for", "Obtenint dades per", "Getting data for", "Obteniendo datos para",
   "please_wait", "Per favor, espere...", "Please wait...", "Por favor, espere...",
@@ -55,10 +55,15 @@ app_translations <- tibble::tribble(
   "", "", "", ""
 )
 
+# source other data-raw scripts needed
+source("data-raw/cv_assets.R")
+
 # internal data for package
 usethis::use_data(
   # app_translations
   app_translations,
-
+  # cv json (from cv_assets.R)
+  interpolators_geojson,
+  # opts
   internal = TRUE, overwrite = TRUE
 )

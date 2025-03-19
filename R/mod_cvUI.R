@@ -24,6 +24,7 @@ mod_cvUI <- function(id) {
 #'
 #' @rdname mod_cvUI
 mod_cv <- function(input, output, session, lang) {
+  # render ui for cv inputs and output placeholders
   output$mod_cv_container <- shiny::renderUI({
     # get the ns
     ns <- session$ns
@@ -32,10 +33,16 @@ mod_cv <- function(input, output, session, lang) {
     cv_date_choices <- seq(Sys.Date() - 370, Sys.Date() - 6, by = "day") |>
       as.Date(format = '%j', origin = as.Date('1970-01-01')) |>
       as.character()
-    cv_stat_choices <- c("bias", "relative_bias", "mae", "r2") |>
-      purrr::set_names(
-        translate_app(c("bias", "relative_bias", "mae", "r2"), lang())
-      )
+    cv_var_choices <- c(
+      "MeanTemperature", "MinTemperature", "MaxTemperature", "ThermalAmplitude",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "Precipitation", "Radiation", "WindSpeed", "PET"
+    ) |>
+      purrr::set_names(translate_app(c(
+        "MeanTemperature", "MinTemperature", "MaxTemperature", "ThermalAmplitude",
+        "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+        "Precipitation", "Radiation", "WindSpeed", "PET"
+      ), lang()))
     # sidebar layout
     shiny::sidebarLayout(
       position = "left", fluid = TRUE,
@@ -53,11 +60,11 @@ mod_cv <- function(input, output, session, lang) {
               maxDate = cv_date_choices[length(cv_date_choices)],
               firstDay = 1
             ),
-            # cv_stat
+            # cv_var
             shinyWidgets::pickerInput(
-              ns("cv_stat"), label = translate_app("cv_stat", lang()),
-              choices = cv_stat_choices,
-              selected = cv_stat_choices[1],
+              ns("cv_var"), label = translate_app("cv_var", lang()),
+              choices = cv_var_choices,
+              selected = cv_var_choices[1],
               multiple = FALSE,
               options = shinyWidgets::pickerOptions(
                 actionsBox = FALSE,
@@ -79,7 +86,47 @@ mod_cv <- function(input, output, session, lang) {
     )
   }) # END of renderUI
 
+  # reactives
+  # data reactive
+  cv_data <- shiny::reactive({
+    # inputs needed
+    shiny::validate(
+      shiny::need(input$cv_var, "no cv statistic selected yet"),
+      shiny::need(input$cv_date, "no cv date selected yet")
+    )
+    # open, filter and return the stat-date data
+    arrow::open_dataset(Sys.getenv("PARQUET_CVS")) |>
+      dplyr::filter(
+        variable == input$cv_var,
+        dates == as.Date(input$cv_date)
+      ) |>
+      dplyr::as_tibble()
+  }) |>
+    # bind to cache and to events (same inputs, date and stat)
+    shiny::bindCache(input$cv_var, input$cv_date) |>
+    shiny::bindEvent(input$cv_var, input$cv_date)
+
+  # echarts output with the cross validations maps
   output$output_cv_maps <- echarts4r::renderEcharts4r({
+    browser()
+    # plots for each stat
+    cv_plots <- cv_data() |>
+      dplyr::group_by(stat) |>
+      dplyr::group_map(
+        .f = \(stat_data, stat_key) {
+          stat_data |>
+            echarts4r::e_charts(interpolator_id) |>
+            echarts4r::e_map_register(
+              "interpolator_bboxes", interpolators_geojson
+            ) |>
+            echarts4r::e_map(
+              value, map = "interpolator_bboxes", nameProperty = "i_step"
+            ) |>
+            echarts4r::e_visual_map(value) |>
+            echarts4r::e_title(translate_app(stat_key[["stat"]], lang())) |>
+            echarts4r::e_group("cv")
+        }
+      )
     
   })
 }
