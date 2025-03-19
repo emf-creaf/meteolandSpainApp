@@ -19,6 +19,10 @@ app_translations <- tibble::tribble(
   "WindDirection", "Direcció del vent [° des del N]", "Wind Direction [° from N]", "Dirección del viento [° desde N]",
   "ThermalAmplitude", "Amplitud Tèrmica [°C]", "Thermal Amplitude [°C]", "Amplitud Térmica [°C]",
   "PET", "PET [mm]", "PET [mm]", "PET [mm]",
+  "RangeTemperature", "Rang de Temperatura [°C]", "Temperature range [°C]", "Rango de Temperatura [°C]",
+  "RelativeHumidity", "Humitat relativa [%]", "Relative Humidity [%]", "Humedad relativa [%]",
+  "TotalPrecipitation", "Precipitació Total [mm]", "Total Precipitation [mm]", "Precipitación Total [mm]",
+  "StationsPrecipitation", "Precipitació Estacions [mm]", "Stations Precipitation [mm]", "Precipitación Estaciones [mm]",
   # cv stats
   "bias", "Setge", "Bias", "Sesgo",
   "relative_bias", "Sesgo relatiu", "Relative bias", "Sesgo relativo",
