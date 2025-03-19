@@ -114,7 +114,7 @@ mod_cv <- function(input, output, session, lang) {
   # plots reactive
   cv_plots <- shiny::reactive({
     # plots for each stat
-    cv_plots <- cv_data() |>
+    plot_list <- cv_data() |>
       dplyr::group_by(stat) |>
       dplyr::group_map(
         .f = \(stat_data, stat_key) {
@@ -126,17 +126,21 @@ mod_cv <- function(input, output, session, lang) {
             echarts4r::e_map(
               value, map = "interpolator_bboxes", nameProperty = "i_step"
             ) |>
-            echarts4r::e_visual_map(value) |>
+            echarts4r::e_visual_map(
+              value,
+              inRange = list(color = c("#14ABCC", "#7CC69A", "#E3DF68")),
+              min = 0, max = 100, precision = 3
+            ) |>
             echarts4r::e_title(translate_app(stat_key[["stat"]], lang()))
         }
       )
     # precip vars have only 2 stats, create an empty plot to serve in that
     # output
-    if (length(cv_plots) < 3) {
-      cv_plots[[3]] <- echarts4r::e_charts()
+    if (length(plot_list) < 3) {
+      plot_list[[3]] <- echarts4r::e_charts()
     }
 
-    return(cv_plots)
+    return(plot_list)
   }) |>
     shiny::bindEvent(cv_data())
 
