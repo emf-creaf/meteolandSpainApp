@@ -47,7 +47,7 @@ mod_cv <- function(input, output, session, lang) {
     shiny::sidebarLayout(
       position = "left", fluid = TRUE,
       sidebarPanel = shiny::sidebarPanel(
-        width = 4,
+        width = 2,
         shiny::fluidRow(
           shiny::column(
             width = 12,
@@ -75,16 +75,19 @@ mod_cv <- function(input, output, session, lang) {
         )
       ), # END of sidebarPanel
       mainPanel = shiny::mainPanel(
-        width = 8,
+        width = 10,
         shiny::fluidRow(
           shiny::column(
-            width = 6,
+            width = 4,
             echarts4r::echarts4rOutput(ns("output_cv_maps_1")),
-            echarts4r::echarts4rOutput(ns("output_cv_maps_3"))
           ),
           shiny::column(
-            width = 6,
-            echarts4r::echarts4rOutput(ns("output_cv_maps_2"))
+            width = 4,
+            echarts4r::echarts4rOutput(ns("output_cv_maps_2")),
+          ),
+          shiny::column(
+            width = 4,
+            echarts4r::echarts4rOutput(ns("output_cv_maps_3"))
           )
         )
       ) # END of mainPanel
