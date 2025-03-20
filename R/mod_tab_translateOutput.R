@@ -11,7 +11,7 @@ mod_tab_translateOutput <- function(id) {
   ns <- shiny::NS(id)
 
   # UI ####
-  shiny::uiOutput(ns("tab_title_translated"))
+  shiny::uiOutput(ns("tab_title_translated"), inline = TRUE)
 }
 
 #' @param input internal
