@@ -30,7 +30,7 @@ mod_cv <- function(input, output, session, lang) {
     ns <- session$ns
 
     # options
-    cv_date_choices <- seq(Sys.Date() - 370, Sys.Date() - 6, by = "day") |>
+    cv_date_choices <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
       as.Date(format = '%j', origin = as.Date('1970-01-01')) |>
       as.character()
     cv_var_choices <- c(
