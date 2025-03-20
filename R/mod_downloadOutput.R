@@ -35,7 +35,7 @@ mod_download <- function(
       shiny::fluidRow(
         # maps download (gpkg public repository link)
         shiny::column(
-          width = 4,
+          width = 4, offset = 2,
           shiny::h4(translate_app("download_maps_title", lang())),
           shiny::p(translate_app("download_maps_text", lang())),
           shiny::actionButton(
