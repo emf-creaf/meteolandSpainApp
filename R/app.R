@@ -66,6 +66,11 @@ meteoland_spain_app <- function() {
       # initializations
       waiter::use_waiter(),
       waiter::use_hostess(),
+      # echart theme reg
+      echarts4r::e_theme_register(
+        '{"color":["#14ABCC","#7CC69A","#E3DF68","#ED51C1"],"backgroundColor":"#191A1A"}',
+        name = "emf_colors"
+      ),
       # corporative image custom css
       shiny::includeCSS(
         system.file("apps_css", "corp_image.css", package = "lfcdata")
