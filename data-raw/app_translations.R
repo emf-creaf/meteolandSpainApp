@@ -40,6 +40,9 @@ app_translations <- tibble::tribble(
   "user_ts_calculate", "Calcular sèries temporals", "Calculate time series", "Calcular series temporales",
   "user_ts_refresh", "Recalcular sèries temporals", "Refresh time series", "Recalcular series temporales",
   "user_ts_refresh_calculating", "Calculant, això pot portar un temps...", "Calculating, this can take a while...", "Calculando, esto puede llevar un tiempo...",
+  "user_info", "Info:", "Info:", "Info:",
+  "user_info_p1", "El mapa té una resolució de 2 km²", "Map has a resolution of 2 km²", "El mapa tiene una resolucion de 2 km²",
+  "user_info_p2", "Les sèries temporals es calculen a una resolució de 500 m²", "Time series are calculated at a 500 m² resolution", "Las series temporales se calculan a una resolución de 500 m²",
   # download outputs
   "download_maps_title", "Descarrega de mapas", "Maps download", "Descarga de mapas",
   "download_maps_text", "", "PLACEHOLDER for download maps text", "",

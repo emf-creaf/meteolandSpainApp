@@ -102,11 +102,21 @@ mod_user <- function(
             ns("user_ts_update"), translate_app("user_ts_calculate", lang()),
             icon = shiny::icon("rotate"),
             label_busy = translate_app("user_ts_refresh_calculating", lang())
-          ),
-          # info placeholder
-          shiny::p("TODO - Placeholder for the info about map resolution and waiting time")
+          )
         )
-      ) # END of second row of inputs
+      ), # END of second row of inputs
+      # a little separation
+      shiny::br(),
+      shiny::br(),
+      # info panel row
+      shiny::fluidRow(
+        shiny::column(
+          width = 12,
+          shiny::h4(shiny::icon("circle-info")),
+          shiny::p(translate_app("user_info_p1", lang())),
+          shiny::p(translate_app("user_info_p2", lang()))
+        )
+      ) # END of info panel row
     ) # END of inputs tagList
   }) # END of renderUI
 
