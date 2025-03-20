@@ -49,14 +49,25 @@ mod_download <- function(
           width = 4,
           shiny::h4(translate_app("download_ts_title", lang())),
           shiny::p(translate_app("download_ts_text", lang())),
-          shiny::downloadButton(
-            ns("download_ts_button"), translate_app("download_ts_button", lang()),
-            icon = shiny::icon("download")
+          shinyjs::disabled(
+            shiny::downloadButton(
+              ns("download_ts_button"),
+              translate_app("download_ts_button", lang()),
+              icon = shiny::icon("download")
+            )
           )
         ) # END of timeseries download column
       )
     ) # END of ouput tagList
   }) # END of renderUI
+
+  # Observer to deactivate the ts download button if no ts is calculated yet
+  shiny::observe({
+    if (user_inputs$user_ts_update > 0) {
+      shinyjs::enable("download_ts_button")
+    }
+  }) |>
+    shiny::bindEvent(user_inputs$user_ts_update)
 
   # Dowload button logic
   output$download_ts_button <- shiny::downloadHandler(

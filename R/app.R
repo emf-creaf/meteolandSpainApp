@@ -66,6 +66,7 @@ meteoland_spain_app <- function() {
       # initializations
       waiter::use_waiter(),
       waiter::use_hostess(),
+      shinyjs::useShinyjs(),
       # echart theme reg
       echarts4r::e_theme_register(
         '{"color":["#14ABCC","#7CC69A","#E3DF68","#ED51C1"],"backgroundColor":"#191A1A"}',
