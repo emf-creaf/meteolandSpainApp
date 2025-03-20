@@ -57,7 +57,9 @@ mod_download <- function(
             )
           )
         ) # END of timeseries download column
-      )
+      ), # END of download row
+      # a little space with the footer is needed here
+      shiny::br(), shiny::br(), shiny::br(),
     ) # END of ouput tagList
   }) # END of renderUI
 
