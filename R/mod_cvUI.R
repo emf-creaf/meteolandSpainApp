@@ -110,75 +110,27 @@ mod_cv <- function(input, output, session, lang) {
     # bind to cache and to events (same inputs, date and stat)
     shiny::bindCache(input$cv_var, input$cv_date) |>
     shiny::bindEvent(input$cv_var, input$cv_date)
-  
-  # plots reactive
-  cv_plots <- shiny::reactive({
-    # plots for each stat
-    plot_list <- cv_data() |>
-      dplyr::group_by(stat) |>
-      dplyr::group_map(
-        .f = \(stat_data, stat_key) {
-          stat_data |>
-            echarts4r::e_charts(interpolator_id) |>
-            echarts4r::e_map_register(
-              "interpolator_bboxes", interpolators_geojson
-            ) |>
-            echarts4r::e_map(
-              value, map = "interpolator_bboxes", nameProperty = "i_step"
-            ) |>
-            echarts4r::e_visual_map(
-              value,
-              inRange = list(color = c("#14ABCC", "#7CC69A", "#E3DF68")),
-              min = 0, max = 100, precision = 3
-            ) |>
-            echarts4r::e_title(translate_app(stat_key[["stat"]], lang()))
-        }
-      )
-    # precip vars have only 2 stats, create an empty plot to serve in that
-    # output
-    if (length(plot_list) < 3) {
-      plot_list[[3]] <- echarts4r::e_charts()
-    }
-
-    return(plot_list)
-  }) |>
-    shiny::bindEvent(cv_data())
 
   # echarts output with the cross validations maps
+  # when a precipitation var is selected, only two stats are calculated, deal
+  # accordingly with this on plots 2 and 3
   output$output_cv_maps_1 <- echarts4r::renderEcharts4r({
-    cv_plots()[[1]]
+    cv_data() |>
+      echarts_cv_builder("bias", lang)
   })
   output$output_cv_maps_2 <- echarts4r::renderEcharts4r({
-    cv_plots()[[2]]
+    stat2plot <- "mae"
+    if (input$cv_var %in% c("TotalPrecipitation", "StationsPrecipitation")) {
+      stat2plot <- "relative_bias"
+    }
+    cv_data() |>
+      echarts_cv_builder(stat2plot, lang)
   })
   output$output_cv_maps_3 <- echarts4r::renderEcharts4r({
-    cv_plots()[[3]]
+    if (input$cv_var %in% c("TotalPrecipitation", "StationsPrecipitation")) {
+      return()
+    }
+    cv_data() |>
+      echarts_cv_builder("r2", lang)
   })
-  # output$output_cv_maps <- echarts4r::renderEcharts4r({
-  #   browser()
-  #   # plots for each stat
-  #   cv_plots <- cv_data() |>
-  #     dplyr::group_by(stat) |>
-  #     dplyr::group_map(
-  #       .f = \(stat_data, stat_key) {
-  #         stat_data |>
-  #           echarts4r::e_charts(interpolator_id) |>
-  #           echarts4r::e_map_register(
-  #             "interpolator_bboxes", interpolators_geojson
-  #           ) |>
-  #           echarts4r::e_map(
-  #             value, map = "interpolator_bboxes", nameProperty = "i_step"
-  #           ) |>
-  #           echarts4r::e_visual_map(value) |>
-  #           echarts4r::e_title(translate_app(stat_key[["stat"]], lang()))
-  #       }
-  #     )
-  #   if (length(cv_plots) < 3) {
-  #     cv_plots[[3]] <- echarts4r::e_charts()
-  #   }
-  #   echarts4r::e_arrange(
-  #     cv_plots[[1]], cv_plots[[2]], cv_plots[[3]],
-  #     cols = 2, rows = 2
-  #   )
-  # })
 }

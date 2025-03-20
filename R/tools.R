@@ -39,14 +39,14 @@ translate_app <- function(id, lang, thesaurus = apps_translations) {
   return(dplyr::pull(id_row, glue::glue("translation_{lang}")))
 }
 
-#' echarts formatter
+#' echarts ts formatter
 #'
 #' Apply the common format (legend, tooltip, theme...) to timeseries (echarts)
 #'
 #' @param echart echarts4r object to format
 #' @param bottom Logical. The bottom ts needs to connect the group and also
 #'   show the datazoom slider
-echarts_formatter <- function(echart, bottom = FALSE) {
+echarts_ts_formatter <- function(echart, bottom = FALSE) {
 
   if (isTRUE(bottom)) {
     echart |>
@@ -68,4 +68,29 @@ echarts_formatter <- function(echart, bottom = FALSE) {
       echarts4r::e_axis(axis = "y", axisLine = list(lineStyle = list(color = "#F8F9FA"))) |>
       echarts4r::e_legend(textStyle = list(color = "#F8F9FA"))
   }
+}
+
+#' echarts cv builder
+#'
+#' Build the cross validations maps
+#'
+#' @param echart_data data to build the echart
+#' @param stat2plot stat (bias, mae...) to plot
+#' @param lang selected lang for translations
+echarts_cv_builder <- function(echart_data, stat2plot, lang) {
+  echart_data |>
+    dplyr::filter(stat == stat2plot) |>
+    echarts4r::e_charts(interpolator_id) |>
+    echarts4r::e_map_register(
+      "interpolator_bboxes", interpolators_geojson
+    ) |>
+    echarts4r::e_map(
+      value, map = "interpolator_bboxes", nameProperty = "i_step"
+    ) |>
+    echarts4r::e_visual_map(
+      value,
+      inRange = list(color = c("#14ABCC", "#7CC69A", "#E3DF68")),
+      min = 0, max = 100, precision = 3
+    ) |>
+    echarts4r::e_title(translate_app(stat2plot, lang()))
 }

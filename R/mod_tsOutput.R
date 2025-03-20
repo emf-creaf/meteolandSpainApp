@@ -187,7 +187,7 @@ mod_ts <- function(
         MaxTemperature, symbol = "none",
         name = translate_app("MaxTemperature", lang())
       ) |>
-      echarts_formatter()
+      echarts_ts_formatter()
   })
   output$output_ts_rh <- echarts4r::renderEcharts4r({
     ts_data$result() |>
@@ -204,7 +204,7 @@ mod_ts <- function(
         MinRelativeHumidity, symbol = "none",
         name = translate_app("MinRelativeHumidity", lang())
       ) |>
-      echarts_formatter()
+      echarts_ts_formatter()
   })
   output$output_ts_rpp <- echarts4r::renderEcharts4r({
     ts_data$result() |>
@@ -225,7 +225,7 @@ mod_ts <- function(
         WindSpeed, symbol = "none",
         name = translate_app("WindSpeed", lang())
       ) |>
-      echarts_formatter(bottom = TRUE)
+      echarts_ts_formatter(bottom = TRUE)
   })
 
   # Collect reactives to pass to the main app or other modules
