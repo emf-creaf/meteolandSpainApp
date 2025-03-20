@@ -45,11 +45,11 @@ app_translations <- tibble::tribble(
   "user_info_p2", "Les sèries temporals es calculen a una resolució de 500 m²", "Time series are calculated at a 500 m² resolution", "Las series temporales se calculan a una resolución de 500 m²",
   # download outputs
   "download_maps_title", "Descarrega de mapas", "Maps download", "Descarga de mapas",
-  "download_maps_text", "", "PLACEHOLDER for download maps text", "",
-  "download_maps_link", "", "PLACEHOLDER", "",
+  "download_maps_text", "Els mapes diaris a 500 m² estan disponibles en el repositori de dades públiques de l'EMF.", "Daily maps at 500 m² resolution are available at the public EMF data repository.", "Los mapas diarios a resolucion de 500 m² están disponibles en el repositorio de datos públicos de la EMF.",
+  "download_maps_link", "Repositori de mapes", "Map files repository", "Repositorio de mapas",
   "download_ts_title", "Descarrega de sèries temporals", "Time series download", "Descarga de series temporales",
-  "download_ts_text", "", "PLACEHOLDER for timeseries text", "",
-  "download_ts_button", "", "PLACEHOLDER", "",
+  "download_ts_text", "La sèrie temporal calculada es pot descarregar en format text (arxiu csv).", "Calculated time series can be downloaded in text format (csv file).", "La serie temporal calculada se puede descargar en formato texto (archivo csv).",
+  "download_ts_button", "Descarrega csv", "Dowload csv", "Descarga csv",
   # map outputs
   "map_tooltip", "Coordenades seleccionades", "Selected coordinates", "Coordenadas seleccionadas",
   # cv ui
