@@ -249,3 +249,14 @@ footer {
 footer>div.row {
   margin: 0px;
 }
+
+/* waiter, hostess... */
+.waiter-overlay-content {
+  color: var(--main-dark-color);
+}
+.waiter-local {
+  left: 0px !important;
+}
+.ldBar-label {
+  color: var(--main-dark-color);
+}
