@@ -91,7 +91,8 @@ echarts_cv_builder <- function(echart_data, stat2plot, lang) {
       value,
       inRange = list(color = c("#14ABCC", "#7CC69A", "#E3DF68")),
       min = 0, max = 100, precision = 3,
-      textStyle = list(color = "#F8F9FA")
+      textStyle = list(color = "#F8F9FA"),
+      left = "right"
     ) |>
     echarts4r::e_title(
       translate_app(stat2plot, lang()),
