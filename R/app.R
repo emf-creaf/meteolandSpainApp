@@ -74,12 +74,13 @@ meteoland_spain_app <- function() {
       ),
       # corporative image custom css
       shiny::includeCSS(
-        system.file("apps_css", "corp_image.css", package = "lfcdata")
-      ),
-      # meteoland app custom css
-      shiny::includeCSS(
-        system.file("apps_css", "meteolandapp.css", package = "lfcdata")
+        system.file("resources", "css", "corp_image.css", package = "meteolandSpainApp")
       )
+      #,
+      # # meteoland app custom css
+      # shiny::includeCSS(
+      #   system.file("resources", "css", "meteolandapp.css", package = "meteolandSpainApp")
+      # )
     ),
 
     navbarPageWithInputs(
