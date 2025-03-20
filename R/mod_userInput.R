@@ -43,7 +43,7 @@ mod_user <- function(
         "Precipitation", "Radiation", "WindSpeed", "PET"
       ), lang()))
 
-    user_date_choices <- seq(Sys.Date() - 370, Sys.Date() - 6, by = "day") |>
+    user_date_choices <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
       as.Date(format = '%j', origin = as.Date('1970-01-01')) |>
       as.character()
 
