@@ -91,7 +91,7 @@ mod_ts <- function(
           "SELECT 
             dates,
             avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
-          FROM '{Sys.getenv('PARQUET_FILES_PATH')}/*/*/*/*.parquet'
+          FROM '{Sys.getenv('PARQUET_FILES_PATH')}'
           WHERE geom.x > {coords_bbox$xmin} AND
             geom.x < {coords_bbox$xmax} AND
             geom.y > {coords_bbox$ymin} AND
