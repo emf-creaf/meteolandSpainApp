@@ -128,7 +128,7 @@ mod_map <- function(
     shiny::validate(
       shiny::need(nrow(bitmap_sel) > 0, "no data for date and var selected")
     )
-    
+
     # create the custom legend to show with the bitmap
     legend_js <- mapdeck::legend_element(
       variables = rev(round(seq(

@@ -118,10 +118,20 @@ mod_cv <- function(input, output, session, lang) {
   # when a precipitation var is selected, only two stats are calculated, deal
   # accordingly with this on plots 2 and 3
   output$output_cv_maps_1 <- echarts4r::renderEcharts4r({
+    # validate we have data
+    shiny::validate(
+      shiny::need(nrow(cv_data()) > 0, "no data for cv selected")
+    )
+    # process cv
     cv_data() |>
       echarts_cv_builder("bias", lang)
   })
   output$output_cv_maps_2 <- echarts4r::renderEcharts4r({
+    # validate we have data
+    shiny::validate(
+      shiny::need(nrow(cv_data()) > 0, "no data for cv selected")
+    )
+    # process cv
     stat2plot <- "mae"
     if (input$cv_var %in% c("TotalPrecipitation", "StationsPrecipitation")) {
       stat2plot <- "relative_bias"
@@ -130,6 +140,11 @@ mod_cv <- function(input, output, session, lang) {
       echarts_cv_builder(stat2plot, lang)
   })
   output$output_cv_maps_3 <- echarts4r::renderEcharts4r({
+    # validate we have data
+    shiny::validate(
+      shiny::need(nrow(cv_data()) > 0, "no data for cv selected")
+    )
+    # process cv
     if (input$cv_var %in% c("TotalPrecipitation", "StationsPrecipitation")) {
       return()
     }
