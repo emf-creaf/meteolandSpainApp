@@ -13,7 +13,7 @@ mod_tsOutput <- function(id) {
       id = ns("ts_hostess"),
       echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 195),
       echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 195),
-      echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 210)
+      echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 205)
     )
   )
 }
@@ -165,7 +165,12 @@ mod_ts <- function(
 
   # 4. use $result() to get the extended task result when calculated
   # echart outputs (temp, rh and rad-prec-pet (rpp))
+  # title only in the first, zoom only in last
   output$output_ts_temp <- echarts4r::renderEcharts4r({
+    point_altitude <- unique(ts_data$result()$elevation)[1] |>
+      round(2)
+    point_latitude <- unique(ts_data$result()$point_latitude)[1]
+    point_longitude <- unique(ts_data$result()$point_longitude)[1]
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_line(
@@ -180,7 +185,12 @@ mod_ts <- function(
         MaxTemperature, symbol = "none",
         name = translate_app("MaxTemperature", lang())
       ) |>
-      echarts_ts_formatter()
+      echarts_ts_formatter() |>
+      echarts4r::e_title(
+        text = glue::glue(
+          "{point_longitude} - {point_latitude} | {point_altitude} asl."
+        )
+      )
   })
   output$output_ts_rh <- echarts4r::renderEcharts4r({
     ts_data$result() |>
