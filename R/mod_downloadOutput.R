@@ -36,24 +36,28 @@ mod_download <- function(
         # maps download (gpkg public repository link)
         shiny::column(
           width = 4, offset = 2,
-          shiny::h4(translate_app("download_maps_title", lang())),
-          shiny::p(translate_app("download_maps_text", lang())),
-          shiny::actionButton(
-            ns("download_maps_link"), translate_app("download_maps_link", lang()),
-            icon = shiny::icon("up-right-from-square"),
-            onclick = "window.open('https://data-emf.creaf.cat/public/gpkg/daily_interpolated_meteo/', '_blank')"
+          shiny::wellPanel(
+            shiny::h4(translate_app("download_maps_title", lang())),
+            shiny::p(translate_app("download_maps_text", lang())),
+            shiny::actionButton(
+              ns("download_maps_link"), translate_app("download_maps_link", lang()),
+              icon = shiny::icon("up-right-from-square"),
+              onclick = "window.open('https://data-emf.creaf.cat/public/gpkg/daily_interpolated_meteo/', '_blank')"
+            )
           )
         ), # END of maps download column
         # timeseries download (csv)
         shiny::column(
           width = 4,
-          shiny::h4(translate_app("download_ts_title", lang())),
-          shiny::p(translate_app("download_ts_text", lang())),
-          shinyjs::disabled(
-            shiny::downloadButton(
-              ns("download_ts_button"),
-              translate_app("download_ts_button", lang()),
-              icon = shiny::icon("download")
+          shiny::wellPanel(
+            shiny::h4(translate_app("download_ts_title", lang())),
+            shiny::p(translate_app("download_ts_text", lang())),
+            shinyjs::disabled(
+              shiny::downloadButton(
+                ns("download_ts_button"),
+                translate_app("download_ts_button", lang()),
+                icon = shiny::icon("download")
+              )
             )
           )
         ) # END of timeseries download column
