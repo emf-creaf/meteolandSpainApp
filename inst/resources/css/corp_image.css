@@ -1,16 +1,5 @@
 /* CORPORATIVE IMAGE */
 
-/* modified from https://www.schemecolor.com/rocky-cliff-color-scheme.php */
-/*
-:root {
-  --main-bg-color: #E8EAEB;
-  --main-dark-color: #1C1C20;
-  --main-selected-color: #83A24E;
-  --main-not-focused-color: #606064;
-  --main-button-color: #606064;
-  --main-button-hover-color: #83A24E;
-}
-*/
 /* Colors based on EMF web */
 :root {
   --main-bg-color: #F8F9FA;
@@ -19,6 +8,7 @@
   --main-not-focused-color: #606060;
   --main-button-color: #13ABCD;
   --main-button-hover-color: #E9E165;
+  --app-bg-color: #343332;
 }
 
 /* language selector */
@@ -140,7 +130,7 @@ button.btn.dropdown-toggle.btn-default {
 
 /* body background */
 body {
-  background-color: var(--main-bg-color);
+  background-color: var(--app-bg-color);
 }
 
 /* buttons */
@@ -155,6 +145,18 @@ body {
   background-color: var(--main-button-color) !important;
   border-color: var(--main-button-color) !important;
   color: var(--main-bg-color) !important;
+}
+
+.btn, .btn:focus {
+  background-color: var(--main-button-color);
+  border-color: var(--main-button-color);
+  color: var(--main-bg-color);
+}
+
+.btn:hover, .btn:active {
+  background-color: var(--main-button-hover-color);
+  border-color: var(--main-button-hover-color);
+  color: var(--main-not-focused-color);
 }
 
 .btn-default:hover, .btn-default:active,
