@@ -9,14 +9,11 @@ mod_tsOutput <- function(id) {
   # ns
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::column(
-      width = 12,
-      shiny::div(
-        id = ns("ts_hostess"),
-        echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 195),
-        echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 195),
-        echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 210)
-      )
+    shiny::div(
+      id = ns("ts_hostess"),
+      echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 195),
+      echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 195),
+      echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 210)
     )
   )
 }
