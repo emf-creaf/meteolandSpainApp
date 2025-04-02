@@ -57,16 +57,16 @@ mod_ts <- function(
         # duckdb conn
         duckdb_parquet <- duckdb::dbConnect(duckdb::duckdb())
         withr::defer(duckdb::dbDisconnect(duckdb_parquet))
-        install_httpfs_statement <- glue::glue_sql(
-          .con = duckdb_parquet,
-          "INSTALL httpfs;"
-        )
-        httpfs_statement <- glue::glue_sql(
-          .con = duckdb_parquet,
-          "LOAD httpfs;"
-        )
-        DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
-        DBI::dbExecute(duckdb_parquet, httpfs_statement)
+        # install_httpfs_statement <- glue::glue_sql(
+        #   .con = duckdb_parquet,
+        #   "INSTALL httpfs;"
+        # )
+        # httpfs_statement <- glue::glue_sql(
+        #   .con = duckdb_parquet,
+        #   "LOAD httpfs;"
+        # )
+        # DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
+        # DBI::dbExecute(duckdb_parquet, httpfs_statement)
         # parquet files to read (last year)
         # parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
         #   purrr::map_chr(
