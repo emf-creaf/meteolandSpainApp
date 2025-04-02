@@ -58,6 +58,10 @@ app_translations <- tibble::tribble(
   # waiting messages
   "getting_data_for", "Obtenint dades per", "Getting data for", "Obteniendo datos para",
   "please_wait", "Per favor, espere...", "Please wait...", "Por favor, espere...",
+  # alerts
+  "alert_no_data_text", "per a la combinació de data i variable seleccionada", "for the selected combination of date and variable", "para la combinación de fecha y variable seleccionada",
+  "alert_no_data_title", "Sense dades", "No data", "Sin datos",
+  "alert_dismiss", "Tancar", "Dismiss", "Cerrar",
   # emty string
   "", "", "", ""
 )

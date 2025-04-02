@@ -105,3 +105,18 @@ echarts_cv_builder <- function(echart_data, stat2plot, lang) {
     ) |>
     echarts4r::e_theme("emf_colors")
 }
+
+validate_rows_with_alert <- function(reactive_data, lang) {
+  if (isFALSE(nrow(reactive_data) > 0)) {
+    shiny::showModal(
+      shiny::modalDialog(
+        translate_app("alert_no_data_text", lang()),
+        title = translate_app("alert_no_data_title", lang()),
+        easyClose = TRUE,
+        footer = shiny::modalButton(translate_app("alert_dismiss", lang()))
+      )
+    )
+  }
+  # return TRUE or FALSE for shiny::need
+  return(nrow(reactive_data) > 0)
+}

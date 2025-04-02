@@ -124,9 +124,12 @@ mod_map <- function(
     bitmap_sel <- bitmap_data()
     ts_point_sel <- ts_point_data()
 
-    # validate we have data
+    # validate we have data, send an alert to the user if not
     shiny::validate(
-      shiny::need(nrow(bitmap_sel) > 0, "no data for date and var selected")
+      shiny::need(
+        validate_rows_with_alert(bitmap_sel, lang),
+        "no data for date and var selected"
+      )
     )
 
     # create the custom legend to show with the bitmap

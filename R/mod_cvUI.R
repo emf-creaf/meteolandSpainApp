@@ -120,7 +120,10 @@ mod_cv <- function(input, output, session, lang) {
   output$output_cv_maps_1 <- echarts4r::renderEcharts4r({
     # validate we have data
     shiny::validate(
-      shiny::need(nrow(cv_data()) > 0, "no data for cv selected")
+      shiny::need(
+        validate_rows_with_alert(cv_data(), lang),
+        "no data for cv selected"
+      )
     )
     # process cv
     cv_data() |>
@@ -129,7 +132,10 @@ mod_cv <- function(input, output, session, lang) {
   output$output_cv_maps_2 <- echarts4r::renderEcharts4r({
     # validate we have data
     shiny::validate(
-      shiny::need(nrow(cv_data()) > 0, "no data for cv selected")
+      shiny::need(
+        validate_rows_with_alert(cv_data(), lang),
+        "no data for cv selected"
+      )
     )
     # process cv
     stat2plot <- "mae"
@@ -142,7 +148,10 @@ mod_cv <- function(input, output, session, lang) {
   output$output_cv_maps_3 <- echarts4r::renderEcharts4r({
     # validate we have data
     shiny::validate(
-      shiny::need(nrow(cv_data()) > 0, "no data for cv selected")
+      shiny::need(
+        validate_rows_with_alert(cv_data(), lang),
+        "no data for cv selected"
+      )
     )
     # process cv
     if (input$cv_var %in% c("TotalPrecipitation", "StationsPrecipitation")) {
