@@ -13,7 +13,8 @@ mod_tsOutput <- function(id) {
       id = ns("ts_hostess"),
       echarts4r::echarts4rOutput(ns("output_ts_temp"), height = 195),
       echarts4r::echarts4rOutput(ns("output_ts_rh"), height = 195),
-      echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 205)
+      echarts4r::echarts4rOutput(ns("output_ts_rpp"), height = 205),
+      shiny::uiOutput(ns("output_ts_point"))
     )
   )
 }
@@ -87,7 +88,7 @@ mod_ts <- function(
           # .con = duckdb_parquet,
           "SELECT 
             dates,
-            avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
+            avg(COLUMNS('elevation|slope|aspect|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
           FROM '{Sys.getenv('PARQUET_FILES_PATH')}'
           WHERE geom.x > {coords_bbox$xmin} AND
             geom.x < {coords_bbox$xmax} AND
@@ -167,10 +168,6 @@ mod_ts <- function(
   # echart outputs (temp, rh and rad-prec-pet (rpp))
   # title only in the first, zoom only in last
   output$output_ts_temp <- echarts4r::renderEcharts4r({
-    point_altitude <- unique(ts_data$result()$elevation)[1] |>
-      round(2)
-    point_latitude <- unique(ts_data$result()$point_latitude)[1]
-    point_longitude <- unique(ts_data$result()$point_longitude)[1]
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_line(
@@ -185,12 +182,7 @@ mod_ts <- function(
         MaxTemperature, symbol = "none",
         name = translate_app("MaxTemperature", lang())
       ) |>
-      echarts_ts_formatter() |>
-      echarts4r::e_title(
-        text = glue::glue(
-          "{point_longitude} - {point_latitude} | {point_altitude} asl."
-        )
-      )
+      echarts_ts_formatter()
   })
   output$output_ts_rh <- echarts4r::renderEcharts4r({
     ts_data$result() |>
@@ -229,6 +221,38 @@ mod_ts <- function(
         name = translate_app("WindSpeed", lang())
       ) |>
       echarts_ts_formatter(bottom = TRUE)
+  })
+
+  # 5. Use $result() also to get the point info and show it in the
+  # ui
+  output$output_ts_point <- shiny::renderUI({
+    shiny::validate(
+      shiny::need(ts_data$result(), "no ts data yet")
+    )
+    point_elevation <- unique(ts_data$result()$elevation)[1] |>
+      round(2)
+    point_aspect <- unique(ts_data$result()$aspect)[1] |>
+      round(2)
+    point_slope <- unique(ts_data$result()$slope)[1] |>
+      round(2)
+    point_latitude <- unique(ts_data$result()$point_latitude)[1]
+    point_longitude <- unique(ts_data$result()$point_longitude)[1]
+
+    shiny::tagList(
+      shiny::wellPanel(
+        shiny::div(
+          align = "center",
+          shiny::icon("map-location"),
+          glue::glue("{point_longitude}, {point_latitude}  |  "),
+          shiny::icon("mountain"),
+          glue::glue("{point_elevation}m asl.  |  "),
+          shiny::icon("hill-rockslide"),
+          glue::glue("{point_slope}º  |  "),
+          shiny::icon("compass"),
+          glue::glue("{point_aspect}º")
+        )
+      )
+    )
   })
 
   # Collect reactives to pass to the main app or other modules
