@@ -1,5 +1,5 @@
 # topo and steps
-topo_arranged <- sf::st_read("data-raw/peninsula_topo_500.gpkg")
+topo_arranged <- sf::st_read("data-raw/penbal_topo_500.gpkg")
 steps <- sort(unique(topo_arranged$partition))
 
 boundaries_arranged <- purrr::map(
