@@ -188,16 +188,16 @@ mod_ts <- function(
     ts_data$result() |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_line(
-        MaxRelativeHumidity, symbol = "none",
-        name = translate_app("MaxRelativeHumidity", lang())
+        MinRelativeHumidity, symbol = "none",
+        name = translate_app("MinRelativeHumidity", lang())
       ) |>
       echarts4r::e_line(
         MeanRelativeHumidity, symbol = "none",
         name = translate_app("MeanRelativeHumidity", lang())
       ) |>
       echarts4r::e_line(
-        MinRelativeHumidity, symbol = "none",
-        name = translate_app("MinRelativeHumidity", lang())
+        MaxRelativeHumidity, symbol = "none",
+        name = translate_app("MaxRelativeHumidity", lang())
       ) |>
       echarts_ts_formatter()
   })
