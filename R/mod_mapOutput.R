@@ -83,16 +83,17 @@ mod_map <- function(
       as.character() |>
       stringr::str_remove_all("-")
 
-    # query
-    # bitmap_sel_query <- glue::glue_sql(
-    #   .con = duckdb_proxy,
-    #   "SELECT * FROM bitmaps
-    #   WHERE var = {var_sel} AND date = {date_sel};"
-    # )
+    # arrow sink
+    arrow_sink <- arrow::S3FileSystem$create(
+      access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+      secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+      scheme = "https",
+      endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
+      region = ""
+    )$cd("meteoland-spain-app-pngs")
 
-    # # return the selected bitmap info (base64 string, bbox...)
-    # DBI::dbGetQuery(duckdb_proxy, bitmap_sel_query)
-    arrow::open_dataset(Sys.getenv("PARQUET_BITMAPS")) |>
+    # arrow::open_dataset(Sys.getenv("PARQUET_BITMAPS")) |>
+    arrow::open_dataset(arrow_sink) |>
       dplyr::filter(var == var_sel, date == date_sel) |>
       dplyr::as_tibble()
   }) |>
