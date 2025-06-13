@@ -55,16 +55,27 @@ mod_ts <- function(
         # duckdb conn
         duckdb_parquet <- duckdb::dbConnect(duckdb::duckdb())
         withr::defer(duckdb::dbDisconnect(duckdb_parquet))
-        # install_httpfs_statement <- glue::glue_sql(
-        #   .con = duckdb_parquet,
-        #   "INSTALL httpfs;"
-        # )
-        # httpfs_statement <- glue::glue_sql(
-        #   .con = duckdb_parquet,
-        #   "LOAD httpfs;"
-        # )
-        # DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
-        # DBI::dbExecute(duckdb_parquet, httpfs_statement)
+        install_httpfs_statement <- glue::glue_sql(
+          .con = duckdb_parquet,
+          "INSTALL httpfs;"
+        )
+        httpfs_statement <- glue::glue_sql(
+          .con = duckdb_parquet,
+          "LOAD httpfs;"
+        )
+        credentials_statement <- glue::glue(
+          "CREATE OR REPLACE SECRET secret (
+            TYPE s3,
+            PROVIDER config,
+            KEY_ID '{Sys.getenv('AWS_ACCESS_KEY_ID')}',
+            SECRET '{Sys.getenv('AWS_SECRET_ACCESS_KEY')}',
+            ENDPOINT '{Sys.getenv('AWS_S3_ENDPOINT')}',
+            REGION ''
+          );"
+        )
+        DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
+        DBI::dbExecute(duckdb_parquet, httpfs_statement)
+        DBI::dbExecute(duckdb_parquet, credentials_statement)
         # parquet files to read (last year)
         # parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
         #   purrr::map_chr(
@@ -89,7 +100,7 @@ mod_ts <- function(
           "SELECT 
             dates,
             avg(COLUMNS('elevation|slope|aspect|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
-          FROM '{Sys.getenv('PARQUET_FILES_PATH')}'
+          FROM read_parquet('s3://meteoland-spain-app-meteo/*/*/*/*.parquet')
           WHERE geom.x > {coords_bbox$xmin} AND
             geom.x < {coords_bbox$xmax} AND
             geom.y > {coords_bbox$ymin} AND
