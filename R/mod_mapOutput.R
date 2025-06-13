@@ -93,7 +93,12 @@ mod_map <- function(
     )$cd("meteoland-spain-app-pngs")
 
     # arrow::open_dataset(Sys.getenv("PARQUET_BITMAPS")) |>
-    arrow::open_dataset(arrow_sink) |>
+    arrow::open_dataset(
+      arrow_sink,
+      factory_options = list(
+        selector_ignore_prefixes = c("daily_interpolated_meteo_cvs")
+      )
+    ) |>
       dplyr::filter(date == date_sel) |>
       dplyr::as_tibble()
   }) |>

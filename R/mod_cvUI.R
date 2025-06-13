@@ -103,7 +103,20 @@ mod_cv <- function(input, output, session, lang) {
       shiny::need(input$cv_date, "no cv date selected yet")
     )
     # open, filter and return the stat-date data
-    arrow::open_dataset(Sys.getenv("PARQUET_CVS")) |>
+    arrow_sink <- arrow::S3FileSystem$create(
+      access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+      secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+      scheme = "https",
+      endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
+      region = ""
+    )$cd("meteoland-spain-app-pngs")
+
+    arrow::open_dataset(
+      arrow_sink,
+      factory_options = list(
+        selector_ignore_prefixes = c("daily_interpolated_meteo_bitmaps")
+      )
+    ) |>
       dplyr::filter(
         variable == input$cv_var,
         dates == as.Date(input$cv_date)
