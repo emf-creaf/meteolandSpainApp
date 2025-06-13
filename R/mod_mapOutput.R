@@ -55,7 +55,7 @@ mod_map <- function(
   bitmap_data <- shiny::reactive({
     # only run when inputs are populated
     shiny::validate(
-      shiny::need(user_inputs$user_var, "Missing meteo variable"),
+      # shiny::need(user_inputs$user_var, "Missing meteo variable"),
       shiny::need(user_inputs$user_date, "Missing date")
     )
 
@@ -66,7 +66,7 @@ mod_map <- function(
         hostess_map$get_loader(),
         shiny::br(),
         shiny::p(glue::glue(
-          "{translate_app('getting_data_for', lang())} {translate_app(user_inputs$user_var, lang())} & {user_inputs$user_date}"
+          "{translate_app('getting_data_for', lang())} {user_inputs$user_date}"
         )),
         shiny::p(translate_app("please_wait", lang()))
       ),
@@ -94,14 +94,18 @@ mod_map <- function(
 
     # arrow::open_dataset(Sys.getenv("PARQUET_BITMAPS")) |>
     arrow::open_dataset(arrow_sink) |>
-      dplyr::filter(var == var_sel, date == date_sel) |>
+      dplyr::filter(date == date_sel) |>
       dplyr::as_tibble()
   }) |>
     shiny::bindCache(
-      user_inputs$user_var, user_inputs$user_date,
+      # user_inputs$user_var,
+      user_inputs$user_date,
       cache = "session"
     ) |>
-    shiny::bindEvent(user_inputs$user_var, user_inputs$user_date)
+    shiny::bindEvent(
+      # user_inputs$user_var,
+      user_inputs$user_date
+    )
 
   ts_point_data <- shiny::reactive({
     # validate inputs
@@ -122,7 +126,9 @@ mod_map <- function(
   # Updating the map
   shiny::observe({
     # get the data
-    bitmap_sel <- bitmap_data()
+    var_sel <- user_inputs$user_var
+    bitmap_sel <- bitmap_data() |>
+      dplyr::filter(var == var_sel)
     ts_point_sel <- ts_point_data()
 
     # validate we have data, send an alert to the user if not
