@@ -78,16 +78,22 @@ mod_cv <- function(input, output, session, lang) {
         width = 10,
         shiny::fluidRow(
           shiny::column(
-            width = 4,
+            width = 6,
             echarts4r::echarts4rOutput(ns("output_cv_maps_1")),
           ),
           shiny::column(
-            width = 4,
+            width = 6,
             echarts4r::echarts4rOutput(ns("output_cv_maps_2")),
+          )
+        ),
+        shiny::fluidRow(
+          shiny::column(
+            width = 6,
+            echarts4r::echarts4rOutput(ns("output_cv_maps_3"))
           ),
           shiny::column(
-            width = 4,
-            echarts4r::echarts4rOutput(ns("output_cv_maps_3"))
+            width = 6,
+            echarts4r::echarts4rOutput(ns("output_cv_maps_4"))
           )
         )
       ) # END of mainPanel
@@ -167,10 +173,27 @@ mod_cv <- function(input, output, session, lang) {
       )
     )
     # process cv
+    stat2plot <- "r2"
+    if (input$cv_var %in% c("TotalPrecipitation", "StationsPrecipitation")) {
+      stat2plot <- "n_stations"
+    }
+    cv_data() |>
+      echarts_cv_builder(stat2plot, lang)
+  })
+  output$output_cv_maps_4 <- echarts4r::renderEcharts4r({
+    # validate we have data
+    shiny::validate(
+      shiny::need(
+        validate_rows_with_alert(cv_data(), lang),
+        "no data for cv selected"
+      )
+    )
+    # process cv
+    stat2plot <- "n_stations"
     if (input$cv_var %in% c("TotalPrecipitation", "StationsPrecipitation")) {
       return()
     }
     cv_data() |>
-      echarts_cv_builder("r2", lang)
+      echarts_cv_builder(stat2plot, lang)
   })
 }

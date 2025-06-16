@@ -28,6 +28,7 @@ app_translations <- tibble::tribble(
   "relative_bias", "Sesgo relatiu", "Relative bias", "Sesgo relativo",
   "mae", "Error Absolut Mitjà", "Mean Absolute Error (MAE)", "Error Absoluto Medio (MAE)",
   "r2", "R quadrat", "R squared", "R cuadrado",
+  "n_stations", "Nombre d'estacions", "Number of stations", "Número de estaciones",
   # user_inputs
   "user_var_date_title", "Mapa", "Map controls", "Mapa",
   "user_var", "Variable:", "Variable:", "Variable:",
