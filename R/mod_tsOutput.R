@@ -49,84 +49,150 @@ mod_ts <- function(
   # extended task for ts_data, to avoid blocking the app while calculating the
   # time series
   # 1. create extended task with mirai function
+  # ts_data <- shiny::ExtendedTask$new(
+  #   \(...) {
+  #     mirai::mirai({
+  #       # duckdb conn
+  #       duckdb_parquet <- duckdb::dbConnect(duckdb::duckdb())
+  #       withr::defer(duckdb::dbDisconnect(duckdb_parquet))
+  #       install_httpfs_statement <- glue::glue_sql(
+  #         .con = duckdb_parquet,
+  #         "INSTALL httpfs;"
+  #       )
+  #       httpfs_statement <- glue::glue_sql(
+  #         .con = duckdb_parquet,
+  #         "LOAD httpfs;"
+  #       )
+  #       credentials_statement <- glue::glue(
+  #         "CREATE OR REPLACE SECRET secret (
+  #           TYPE s3,
+  #           PROVIDER config,
+  #           KEY_ID '{Sys.getenv('AWS_ACCESS_KEY_ID')}',
+  #           SECRET '{Sys.getenv('AWS_SECRET_ACCESS_KEY')}',
+  #           ENDPOINT '{Sys.getenv('AWS_S3_ENDPOINT')}',
+  #           REGION ''
+  #         );"
+  #       )
+  #       DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
+  #       DBI::dbExecute(duckdb_parquet, httpfs_statement)
+  #       DBI::dbExecute(duckdb_parquet, credentials_statement)
+  #       # parquet files to read (last year)
+  #       # parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
+  #       #   purrr::map_chr(
+  #       #     .f = \(i_date) {
+  #       #       glue::glue("https://data-emf.creaf.cat/public/parquet/daily_interpolated_meteo/year={lubridate::year(i_date)}/month={lubridate::month(i_date)}/day={lubridate::day(i_date)}/part-0.parquet")
+  #       #     }
+  #       #   )
+  #       # parquet_files_array <- glue::glue(
+  #       #   '[{glue::glue_sql(.con = duckdb_parquet, "{parquet_files_vector}") |> glue::glue_sql_collapse(sep = ", ")}]'
+  #       # )
+  #       # user points bbox (500^2)
+  #       coords_bbox <- dplyr::tibble(
+  #         x = user_longitude, y = user_latitude
+  #       ) |>
+  #         sf::st_as_sf(coords = c("x", "y"), crs = 4326) |>
+  #         sf::st_transform(crs = 25830) |>
+  #         sf::st_buffer(250) |>
+  #         sf::st_bbox()
+  #       # duckdb sql query
+  #       ts_query <- glue::glue(
+  #         # .con = duckdb_parquet,
+  #         "SELECT 
+  #           dates,
+  #           avg(COLUMNS('elevation|slope|aspect|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
+  #         FROM read_parquet('s3://meteoland-spain-app-meteo/*/*/*/*.parquet')
+  #         WHERE geom.x > {coords_bbox$xmin} AND
+  #           geom.x < {coords_bbox$xmax} AND
+  #           geom.y > {coords_bbox$ymin} AND
+  #           geom.y < {coords_bbox$ymax}
+  #         GROUP BY dates;"
+  #       )
+  #       # ts_query <- glue::glue(
+  #       #   # .con = duckdb_parquet,
+  #       #   "SELECT 
+  #       #     dates,
+  #       #     avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
+  #       #   FROM read_parquet({parquet_files_array})
+  #       #   WHERE geom.x > {coords_bbox$xmin} AND
+  #       #     geom.x < {coords_bbox$xmax} AND
+  #       #     geom.y > {coords_bbox$ymin} AND
+  #       #     geom.y < {coords_bbox$ymax}
+  #       #   GROUP BY dates;"
+  #       # )
+  #       # return the result of the query ordered by dates
+  #       DBI::dbGetQuery(duckdb_parquet, ts_query) |>
+  #         dplyr::arrange(dates) |>
+  #         dplyr::mutate(
+  #           point_latitude = user_latitude,
+  #           point_longitude = user_longitude
+  #         )
+  #     }, ...)
+  #   }
+  # ) |>
   ts_data <- shiny::ExtendedTask$new(
     \(...) {
-      mirai::mirai({
-        # duckdb conn
-        duckdb_parquet <- duckdb::dbConnect(duckdb::duckdb())
-        withr::defer(duckdb::dbDisconnect(duckdb_parquet))
-        install_httpfs_statement <- glue::glue_sql(
-          .con = duckdb_parquet,
-          "INSTALL httpfs;"
-        )
-        httpfs_statement <- glue::glue_sql(
-          .con = duckdb_parquet,
-          "LOAD httpfs;"
-        )
-        credentials_statement <- glue::glue(
-          "CREATE OR REPLACE SECRET secret (
-            TYPE s3,
-            PROVIDER config,
-            KEY_ID '{Sys.getenv('AWS_ACCESS_KEY_ID')}',
-            SECRET '{Sys.getenv('AWS_SECRET_ACCESS_KEY')}',
-            ENDPOINT '{Sys.getenv('AWS_S3_ENDPOINT')}',
-            REGION ''
-          );"
-        )
-        DBI::dbExecute(duckdb_parquet, install_httpfs_statement)
-        DBI::dbExecute(duckdb_parquet, httpfs_statement)
-        DBI::dbExecute(duckdb_parquet, credentials_statement)
-        # parquet files to read (last year)
-        # parquet_files_vector <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
-        #   purrr::map_chr(
-        #     .f = \(i_date) {
-        #       glue::glue("https://data-emf.creaf.cat/public/parquet/daily_interpolated_meteo/year={lubridate::year(i_date)}/month={lubridate::month(i_date)}/day={lubridate::day(i_date)}/part-0.parquet")
-        #     }
-        #   )
-        # parquet_files_array <- glue::glue(
-        #   '[{glue::glue_sql(.con = duckdb_parquet, "{parquet_files_vector}") |> glue::glue_sql_collapse(sep = ", ")}]'
-        # )
-        # user points bbox (500^2)
-        coords_bbox <- dplyr::tibble(
-          x = user_longitude, y = user_latitude
-        ) |>
-          sf::st_as_sf(coords = c("x", "y"), crs = 4326) |>
-          sf::st_transform(crs = 25830) |>
-          sf::st_buffer(250) |>
-          sf::st_bbox()
-        # duckdb sql query
-        ts_query <- glue::glue(
-          # .con = duckdb_parquet,
-          "SELECT 
-            dates,
-            avg(COLUMNS('elevation|slope|aspect|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
-          FROM read_parquet('s3://meteoland-spain-app-meteo/*/*/*/*.parquet')
-          WHERE geom.x > {coords_bbox$xmin} AND
-            geom.x < {coords_bbox$xmax} AND
-            geom.y > {coords_bbox$ymin} AND
-            geom.y < {coords_bbox$ymax}
-          GROUP BY dates;"
-        )
-        # ts_query <- glue::glue(
-        #   # .con = duckdb_parquet,
-        #   "SELECT 
-        #     dates,
-        #     avg(COLUMNS('elevation|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal'))
-        #   FROM read_parquet({parquet_files_array})
-        #   WHERE geom.x > {coords_bbox$xmin} AND
-        #     geom.x < {coords_bbox$xmax} AND
-        #     geom.y > {coords_bbox$ymin} AND
-        #     geom.y < {coords_bbox$ymax}
-        #   GROUP BY dates;"
-        # )
-        # return the result of the query ordered by dates
-        DBI::dbGetQuery(duckdb_parquet, ts_query) |>
-          dplyr::arrange(dates) |>
-          dplyr::mutate(
-            point_latitude = user_latitude,
-            point_longitude = user_longitude
+      mirai::mirai_map(
+        1L:12L,
+        \(month_to_query) {
+          # db preparation
+          duckdb_proxy <- DBI::dbConnect(duckdb::duckdb())
+          withr::defer(DBI::dbDisconnect(duckdb_proxy))
+          install_httpfs_statement <- glue::glue_sql(
+            .con = duckdb_proxy,
+            "INSTALL httpfs;"
           )
-      }, ...)
+          httpfs_statement <- glue::glue_sql(
+            .con = duckdb_proxy,
+            "LOAD httpfs;"
+          )
+          install_spatial_statement <- glue::glue_sql(
+            .con = duckdb_proxy,
+            "INSTALL spatial;"
+          )
+          spatial_statement <- glue::glue_sql(
+            .con = duckdb_proxy,
+            "LOAD spatial;"
+          )
+          credentials_statement <- glue::glue(
+            "CREATE OR REPLACE SECRET secret (
+              TYPE s3,
+              PROVIDER config,
+              KEY_ID '{Sys.getenv('AWS_ACCESS_KEY_ID')}',
+              SECRET '{Sys.getenv('AWS_SECRET_ACCESS_KEY')}',
+              REGION '',
+              ENDPOINT '{Sys.getenv('AWS_S3_ENDPOINT')}'
+            );"
+          )
+          DBI::dbExecute(duckdb_proxy, install_httpfs_statement)
+          DBI::dbExecute(duckdb_proxy, httpfs_statement)
+          DBI::dbExecute(duckdb_proxy, install_spatial_statement)
+          DBI::dbExecute(duckdb_proxy, spatial_statement)
+          DBI::dbExecute(duckdb_proxy, credentials_statement)
+
+          # month query
+          ts_query <- glue::glue(
+            "SELECT 
+              dates,
+              avg(COLUMNS('elevation|slope|aspect|Temperature|Prec|Humidity|Radiation|Wind|PET|Thermal')),
+              first(geom_text) AS geom_text
+            FROM read_parquet('s3://meteoland-spain-app-meteo/*/*/*/*.parquet')
+            WHERE geom.x > {coords_bbox[['xmin']]} AND
+              geom.x < {coords_bbox[['xmax']]} AND
+              geom.y > {coords_bbox[['ymin']]} AND
+              geom.y < {coords_bbox[['ymax']]} AND
+              month = {month_to_query}
+            GROUP BY dates
+            ;"
+          )
+          DBI::dbGetQuery(duckdb_proxy, ts_query) |>
+            dplyr::arrange(dates) |>
+            dplyr::mutate(
+              point_latitude = user_latitude,
+              point_longitude = user_longitude
+            )
+        },
+        ...
+      )
     }
   ) |>
     bslib::bind_task_button("user_ts_update", session = button_session)
@@ -138,10 +204,19 @@ mod_ts <- function(
       shiny::need(user_inputs$user_latitude, "Missing latitude"),
       shiny::need(user_inputs$user_longitude, "Missing longitude")
     )
+    # user points bbox (500^2)
+    coords_bbox <- dplyr::tibble(
+      x = user_inputs$user_longitude, y = user_inputs$user_latitude
+    ) |>
+      sf::st_as_sf(coords = c("x", "y"), crs = 4326) |>
+      sf::st_transform(crs = 25830) |>
+      sf::st_buffer(250) |>
+      sf::st_bbox()
     # invoke extended task
     ts_data$invoke(
       user_longitude = user_inputs$user_longitude,
-      user_latitude = user_inputs$user_latitude
+      user_latitude = user_inputs$user_latitude,
+      coords_bbox = coords_bbox
     )
   }) |>
     shiny::bindEvent(user_inputs$user_ts_update)
@@ -180,6 +255,8 @@ mod_ts <- function(
   # title only in the first, zoom only in last
   output$output_ts_temp <- echarts4r::renderEcharts4r({
     ts_data$result() |>
+      purrr::list_rbind() |>
+      dplyr::arrange(dates) |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MinTemperature, symbol = "none",
@@ -197,6 +274,8 @@ mod_ts <- function(
   })
   output$output_ts_rh <- echarts4r::renderEcharts4r({
     ts_data$result() |>
+      purrr::list_rbind() |>
+      dplyr::arrange(dates) |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MinRelativeHumidity, symbol = "none",
@@ -214,6 +293,8 @@ mod_ts <- function(
   })
   output$output_ts_rpp <- echarts4r::renderEcharts4r({
     ts_data$result() |>
+      purrr::list_rbind() |>
+      dplyr::arrange(dates) |>
       echarts4r::e_charts(dates) |>
       echarts4r::e_bar(
         Precipitation,
@@ -240,14 +321,28 @@ mod_ts <- function(
     shiny::validate(
       shiny::need(ts_data$result(), "no ts data yet")
     )
-    point_elevation <- unique(ts_data$result()$elevation)[1] |>
+
+    point_data <- ts_data$result() |>
+      purrr::list_rbind()
+
+    point_elevation <- point_data |>
+      dplyr::pull(elevation) |>
+      dplyr::first() |>
       round(2)
-    point_aspect <- unique(ts_data$result()$aspect)[1] |>
+    point_aspect <- point_data |>
+      dplyr::pull(aspect) |>
+      dplyr::first() |>
       round(2)
-    point_slope <- unique(ts_data$result()$slope)[1] |>
+    point_slope <- point_data |>
+      dplyr::pull(slope) |>
+      dplyr::first() |>
       round(2)
-    point_latitude <- unique(ts_data$result()$point_latitude)[1]
-    point_longitude <- unique(ts_data$result()$point_longitude)[1]
+    point_latitude <- point_data |>
+      dplyr::pull(point_latitude) |>
+      dplyr::first()
+    point_longitude <- point_data |>
+      dplyr::pull(point_longitude) |>
+      dplyr::first()
 
     shiny::tagList(
       shiny::wellPanel(

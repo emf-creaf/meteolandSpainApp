@@ -52,7 +52,7 @@ meteoland_spain_app <- function() {
   )
 
   #### Mirai daemons ####
-  mirai::daemons(2)
+  mirai::daemons(12)
   shiny::onStop(function() {mirai::daemons(0)})
 
   #### JS scripts needed ####
