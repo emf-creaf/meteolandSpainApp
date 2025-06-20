@@ -166,6 +166,12 @@ meteoland_spain_app <- function() {
         icon = shiny::icon("check-double"),
         mod_cvUI("cv_ui")
       ), # END of cross validations tab
+      # Technical specs tab
+      shiny::tabPanel(
+        title = mod_tab_translateOutput("tech_specs_tab_translation"),
+        icon = shiny::icon("cog"),
+        mod_techSpecsOutput("tech_specs_output")
+      ) # END of cross validations tab
     ) # END of navbarPage
   ) # END of UI tagList
 
@@ -203,10 +209,15 @@ meteoland_spain_app <- function() {
       mod_cv, "cv_ui",
       lang
     )
+    shiny::callModule(
+      mod_techSpecs, "tech_specs_output",
+      lang
+    )
 
     # tab translations
     c(
-      "main_tab_translation", "download_tab_translation", "cv_tab_translation"
+      "main_tab_translation", "download_tab_translation", "cv_tab_translation",
+      "tech_specs_tab_translation"
     ) |>
       purrr::walk(
         .f = \(mod_id) {

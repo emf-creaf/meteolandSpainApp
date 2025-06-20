@@ -6,6 +6,7 @@ app_translations <- tibble::tribble(
   "main_tab_translation", "Explora", "Explore", "Explora",
   "download_tab_translation", "Descarrega", "Download", "Descarga",
   "cv_tab_translation", "Validacions creuades", "Cross Validations", "Validaciones cruzadas",
+  "tech_specs_tab_translation", "Especificacions tècniques", "Technical specifications", "Especificaciones técnicas",
   # variables
   "MeanTemperature", "Temperatura mitjana [°C]", "Mean Temperature [°C]", "Temperatura media [°C]",
   "MinTemperature", "Temperatura mínima [°C]", "Min Temperature [°C]", "Temperatura mínima [°C]",

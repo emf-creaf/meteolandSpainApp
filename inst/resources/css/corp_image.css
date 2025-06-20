@@ -131,6 +131,7 @@ button.btn.dropdown-toggle.btn-default {
 /* body background */
 body {
   background-color: var(--app-bg-color);
+  color: var(--main-bg-color);
 }
 
 /* buttons */
