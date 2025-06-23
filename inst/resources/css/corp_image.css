@@ -9,6 +9,8 @@
   --main-button-color: #13ABCD;
   --main-button-hover-color: #E9E165;
   --app-bg-color: #343332;
+  --mapdeck-legend-color: #F8F9FA;
+  --mapdeck-legend-bg: #191A1AE6;
 }
 
 /* language selector */
@@ -262,4 +264,11 @@ footer>div.row {
 }
 .ldBar-label {
   color: var(--main-dark-color);
+}
+
+/* mapdeck */
+.mapdeckLegend {
+  color: var(--mapdeck-legend-color) !important;
+  background: var(--mapdeck-legend-bg) !important;
+  border: 0px !important;
 }
