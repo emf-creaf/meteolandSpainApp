@@ -5,7 +5,7 @@ output: html_document
 
 ### Introducció
 
-L'aplicació **Meteoland App** intenta proporcionar estimacions de meteorologia diària per a tota Espanya, cobrint el darrer any natural, basant-se en dades d'estacions meteorològiques. Aquest servei està pensat per donar suport d'estudis en l'àmbit forestal que requereixin informació climàtica diària, complementant les dades que puguin oferir les institucions esmentades. És important recordar que les dades proporcionades inclouen interpolacions i càlculs basats en models, pel que els valors resultants poden contenir diferències notables respecte a mesuraments.
+L'aplicació **Meteoland App** intenta proporcionar estimacions meteorològiques diàries per a tot Espanya, cobrint l'últim any natural, basades en dades d'estacions meteorològiques. Aquest servei està dissenyat per donar suport a estudis que requereixen informació climàtica diària, complementant les dades que poden oferir les institucions esmentades. Cal recordar que les dades proporcionades inclouen interpolacions i càlculs basats en models, per la qual cosa els valors resultants poden contenir diferències notables respecte a les mesures.
 
 ### Fonts de dades
 
@@ -25,19 +25,19 @@ A partir de la aproximació general, cal tenir en compte les diferències metodo
 + *Precipitació* - La interpolació de la precipitació és més complexa, donada la necessitat de predir tant la ocurrència de precipitació com la quantitat. Per a fer-ho, es defineix primer un predictor binomial de la ocurrència de precipitació a partir de la ocurrència en les estacions. Per a aquells punts objectiu on es determina que hi ha precipitació, la rutina d'interpolació prediu la quantitat de precipitació de manera semblant a la temperatura, és a dir tenint en compte la diferència d'elevació entre les estacions i cada punt objectiu.
 + *Vent* - La interpolació del vent es realitza de dues maneres segons la informació disponible. Si només es disposa de velocitats mitjanes diàries, però no de direccions, la interpolació es realitza mitjançant el procediment general, però si es disposa de direccions es calculen promitjos polars fent servir els pesos esmentats.
 
-És important tenir en compte que hi ha variables que no són interpolades, sinó que són calculades *a posteriori* a partir de les interpolacions de les variables anteriors:
+És important tenir en compte que hi ha variables que no s'interpolen, sinó que es calculen *a posteriori* utilitzant les variables interpolades prèviament com a predictors:
 
 + *Radiació* - La radiació solar incident diària es calcula en dos passos. En primer lloc es determina una radiació solar potencial tenint en compte la declinació solar així com la latitut, orientació i pendent del punt objectiu (Granier & Ohmura 1968), integrant la radiació  instantània entre l'alba i la posta de sol. A continuació, s'estima la radiació solar incident corregint la radiació potencial segons la transmitància de l'atmosfera, seguint l'aproximació de Thornton & Running (1999).
 + *Evapotranspiració potencial* - Un cop totes les variables esmentades anteriorment estan disponibles, es calcula l'evapotranspiració potencial de referència diària per al punt objectiu segons l'aproximació de Penman (1948).
 
+### Estimació de paràmetres
 
-### Estimació per als darrers 365 dies
+Com s'ha esmentat anteriorment, la metodologia d'interpolació requereix especificar els paràmetres $\alpha$ i $N$ per a cada variable a interpolar (en el cas de la precipitació, són dos parells). Aquests paràmetres s'han estimat mitjançant calibratges per a cada dia de l'any en curs, determinant aquells paràmetres que minimitzen l'error d'estimació a les mateixes estacions base.
+El calibratge no es realitza per a tota l'àrea objectiu. En canvi, l'àrea a interpolar s'ha dividit en quadrants que contenen almenys 45 estacions meteorològiques, per evitar zones sense cobertura, i incloent una zona de protecció per evitar efectes de vora. Els paràmetres es calibren per a cadascun d'aquests quadrants per separat.
 
-L'aplicació **Meteoland App** ofereix la possibilitat d'estimar dades de meteorologia per als darrers 365 dies fins a la data d'ahir. La interpolació/càlcul de dades de l'any en curs es realitza a partir de dades obtingudes diàriament mitjançant el paquet de R `meteospain`. Aquest fet implica que les dades de les estacions no han passat tots els controls de qualitat pertinents i poden contenir errors. La resolució espacial oferta és de 500 m^2.
+### Rendiment predictiu
 
-### Paràmetrització i evaluació
-
-Tal i com s'ha esmentat anteriorment, la metodologia d'interpolació necessita especificar els paràmetres $\alpha$ i $N$ per a cada variable a interpolar (en el cas de la precipitació són dos parells). Aquests paràmetres han estat estimats mitjançant calibracions per a cada dia de l'any en curs, determinant aquells paràmetres que minimitzaven l'error d'estimació sobre les mateixes estacions de base. Les validacions d'aquests calibratges es poden consultar a la pestanya "Validacions creuades". Com es pot observar a les validacions, l'àrea a interpolar s'ha dividit en quadrants que continguessin almenys 45 estacions meteorològiques, per evitar zones sense cobertura.
+El rendiment predictiu de la metodologia d'estimació amb els paràmetres calibrats es pot trobar a la pestanya "Validacions creuades". Segons la variable, les estadístiques de rendiment inclouen el nombre d'estacions utilitzades, el biaix absolut o relatiu, l'error absolut mitjà o el coeficient de determinació. El rendiment predictiu es dóna per a cadascun dels quadrants utilitzats en el calibratge dels paràmetres.
 
 
 ### Bibliografia
