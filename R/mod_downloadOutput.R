@@ -85,6 +85,7 @@ mod_download <- function(
         shiny::need(user_inputs$user_ts_update > 0, "no ts calculated yet")
       )
       ts_outputs$ts_data$result() |>
+        purrr::list_rbind() |>
         write.csv(file)
     }
   )
