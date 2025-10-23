@@ -120,7 +120,10 @@ mod_cv <- function(input, output, session, lang) {
     arrow::open_dataset(
       arrow_sink,
       factory_options = list(
-        selector_ignore_prefixes = c("daily_interpolated_meteo_bitmaps")
+        selector_ignore_prefixes = c(
+          "daily_interpolated_meteo_bitmaps",
+          "daily_interpolated_meteo_timeseries"
+        )
       )
     ) |>
       dplyr::filter(

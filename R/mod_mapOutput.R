@@ -96,7 +96,10 @@ mod_map <- function(
     arrow::open_dataset(
       arrow_sink,
       factory_options = list(
-        selector_ignore_prefixes = c("daily_interpolated_meteo_cvs")
+        selector_ignore_prefixes = c(
+          "daily_interpolated_meteo_cvs",
+          "daily_interpolated_meteo_timeseries"
+        )
       )
     ) |>
       dplyr::filter(date == date_sel) |>
