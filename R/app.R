@@ -7,30 +7,6 @@
 #'
 #' @export
 meteoland_spain_app <- function() {
-  #### duckdb connection ####
-  # duckdb_proxy <- duckdb::dbConnect(duckdb::duckdb())
-  # # withr::defer(duckdb::dbDisconnect(duckdb_proxy))
-  # install_httpfs_statement <- glue::glue_sql(
-  #   .con = duckdb_proxy,
-  #   "INSTALL httpfs;"
-  # )
-  # httpfs_statement <- glue::glue_sql(
-  #   .con = duckdb_proxy,
-  #   "LOAD httpfs;"
-  # )
-  # DBI::dbExecute(duckdb_proxy, install_httpfs_statement)
-  # DBI::dbExecute(duckdb_proxy, httpfs_statement)
-
-  # #### Pre-loaded data ####
-  # # bitmaps
-  # bitmaps_query <- glue::glue_sql(
-  #   .con = duckdb_proxy,
-  #   "CREATE VIEW bitmaps AS
-  #     SELECT * FROM
-  #       read_parquet('https://data-emf.creaf.cat/public/parquet/bitmaps/daily_interpolated_meteo_bitmaps.parquet');"
-  # )
-  # DBI::dbExecute(duckdb_proxy, bitmaps_query)
-
   #### Language input ####
   shiny::addResourcePath(
     "images", system.file("resources", "images", package = "meteolandSpainApp")
@@ -66,7 +42,6 @@ meteoland_spain_app <- function() {
       # initializations
       waiter::use_waiter(),
       waiter::use_hostess(),
-      shinyjs::useShinyjs(),
       # echart theme reg
       echarts4r::e_theme_register(
         '{"color":["#14ABCC","#7CC69A","#E3DF68","#ED51C1"],"backgroundColor":"#191A1A"}',
@@ -76,11 +51,6 @@ meteoland_spain_app <- function() {
       shiny::includeCSS(
         system.file("resources", "css", "corp_image.css", package = "meteolandSpainApp")
       )
-      #,
-      # # meteoland app custom css
-      # shiny::includeCSS(
-      #   system.file("resources", "css", "meteolandapp.css", package = "meteolandSpainApp")
-      # )
     ),
 
     navbarPageWithInputs(
@@ -121,7 +91,7 @@ meteoland_spain_app <- function() {
       # Main (Explore) tab
       shiny::tabPanel(
         title = mod_tab_translateOutput("main_tab_translation"),
-        icon = shiny::icon("eye"),
+        icon = shiny::icon("map"),
         ########################################################### debug ####
         # shiny::absolutePanel(                                              #
         #   id = 'debug', class = 'panel panel-default', fixed = TRUE,       #
@@ -133,33 +103,14 @@ meteoland_spain_app <- function() {
         #   shiny::textOutput('debug3')                                      #
         # ),                                                                 #
         ####################################################### end debug ####
-        shiny::sidebarLayout(
-          position = "left", fluid = TRUE,
-          sidebarPanel = shiny::sidebarPanel(
-            width = 2,
-            mod_userInput("user_input")
-          ), # END of sidebarPanel
-          mainPanel = shiny::mainPanel(
-            width = 10,
-            shiny::fluidRow(
-              shiny::column(
-                width = 7,
-                mod_mapOutput("map_output")
-              ),
-              shiny::column(
-                width = 5,
-                mod_tsOutput("ts_output")
-              )
-            )
-          ) # END of mainPanel
-        ) # END of sidebarLayout
+        mod_mapOutput("map_output")
       ), # END of main (Explore) tab
-      # Download tab
+      # Time series tab
       shiny::tabPanel(
-        title = mod_tab_translateOutput("download_tab_translation"),
-        icon = shiny::icon("save"),
-        mod_downloadOutput("download_output")
-      ), # END of donwload tab
+        title = mod_tab_translateOutput("ts_tab_translation"),
+        icon = shiny::icon("chart-line"),
+        mod_tsOutput("ts_output")
+      ), # END of ts tab
       # Cross validations tab
       shiny::tabPanel(
         title = mod_tab_translateOutput("cv_tab_translation"),
@@ -185,25 +136,26 @@ meteoland_spain_app <- function() {
     # mapbox token
     mapdeck::set_token(Sys.getenv("MAPBOX_TOKEN"))
 
-    # modules
-    user_reactives <- shiny::callModule(
-      mod_user, 'user_input', lang
+    # bucket
+    meteoland_bucket <- arrow::s3_bucket(
+      "meteoland-spain-app-pngs",
+      access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+      secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+      scheme = "https",
+      endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
+      region = ""
     )
+
+    # modules
     map_reactives <- shiny::callModule(
       mod_map, 'map_output',
-      user_reactives$user_reactives,
-      lang
+      arrow_sink = meteoland_bucket,
+      lang = lang
     )
     ts_reactives <- shiny::callModule(
       mod_ts, 'ts_output',
-      user_reactives$user_reactives,
-      user_reactives$user_inputs_session,
-      lang
-    )
-    download_reactives <- shiny::callModule(
-      mod_download, "download_output",
-      user_reactives$user_reactives, ts_reactives,
-      lang
+      arrow_sink = meteoland_bucket,
+      lang = lang
     )
     cv_reactives <- shiny::callModule(
       mod_cv, "cv_ui",
@@ -216,7 +168,7 @@ meteoland_spain_app <- function() {
 
     # tab translations
     c(
-      "main_tab_translation", "download_tab_translation", "cv_tab_translation",
+      "main_tab_translation", "ts_tab_translation", "cv_tab_translation",
       "tech_specs_tab_translation"
     ) |>
       purrr::walk(

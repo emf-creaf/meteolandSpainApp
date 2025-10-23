@@ -9,27 +9,32 @@
 mod_cvUI <- function(id) {
   # ns
   ns <- shiny::NS(id)
-
-  # UI ####
-  shiny::tagList(shiny::uiOutput(ns("mod_cv_container")))
+  shiny::tagList(
+    bslib::layout_sidebar(
+      shiny::uiOutput(ns("mod_cv_container")),
+      sidebar = bslib::sidebar(
+        shiny::uiOutput(ns('inputs_cv')),
+        class = "inputs_cv",
+        open = list(desktop = "open", mobile = "always-above")
+      )
+    )
+  )
 }
 
 #' mod_cv server function
 #' @param input internal
 #' @param output internal
 #' @param session internal
+#' @param arrow_sink bucket s3 filesystem
 #' @param lang lang selected
 #'
 #' @export
 #'
 #' @rdname mod_cvUI
-mod_cv <- function(input, output, session, lang) {
-  # render ui for cv inputs and output placeholders
-  output$mod_cv_container <- shiny::renderUI({
-    # get the ns
-    ns <- session$ns
-
-    # options
+mod_cv <- function(input, output, session, arrow_sink, lang) {
+  # cv inputs
+  output$inputs_cv <- shiny::renderUI({
+    # precalculated choices
     cv_date_choices <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
       as.Date(format = '%j', origin = as.Date('1970-01-01')) |>
       as.character()
@@ -43,62 +48,66 @@ mod_cv <- function(input, output, session, lang) {
         "RelativeHumidity", "Radiation",
         "TotalPrecipitation", "StationsPrecipitation"
       ), lang()))
-    # sidebar layout
-    shiny::sidebarLayout(
-      position = "left", fluid = TRUE,
-      sidebarPanel = shiny::sidebarPanel(
-        width = 2,
-        shiny::fluidRow(
-          shiny::column(
-            width = 12,
-            # cv date
-            shinyWidgets::airDatepickerInput(
-              ns("cv_date"), label = translate_app("cv_date", lang()),
-              value = cv_date_choices[length(cv_date_choices)],
-              multiple = FALSE, range = FALSE,
-              minDate = cv_date_choices[1],
-              maxDate = cv_date_choices[length(cv_date_choices)],
-              firstDay = 1
-            ),
-            # cv_var
-            shinyWidgets::pickerInput(
-              ns("cv_var"), label = translate_app("cv_var", lang()),
-              choices = cv_var_choices,
-              selected = cv_var_choices[1],
-              multiple = FALSE,
-              options = shinyWidgets::pickerOptions(
-                actionsBox = FALSE,
-                tickIcon = "glyphicon-ok-sign"
-              )
+
+    shiny::tagList(
+      shiny::h4(translate_app("map_controls", lang())),
+      shiny::br(),
+      shiny::fluidRow(
+        shiny::column(
+          width = 12,
+          # cv_var
+          shinyWidgets::pickerInput(
+            ns("cv_var"), label = translate_app("cv_var", lang()),
+            choices = cv_var_choices,
+            selected = cv_var_choices[1],
+            multiple = FALSE,
+            options = shinyWidgets::pickerOptions(
+              actionsBox = FALSE,
+              tickIcon = "glyphicon-ok-sign"
             )
+          ),
+          shiny::br(),
+          # cv date
+          shinyWidgets::airDatepickerInput(
+            ns("cv_date"), label = translate_app("cv_date", lang()),
+            value = cv_date_choices[length(cv_date_choices)],
+            multiple = FALSE, range = FALSE,
+            minDate = cv_date_choices[1],
+            maxDate = cv_date_choices[length(cv_date_choices)],
+            firstDay = 1
           )
         )
-      ), # END of sidebarPanel
-      mainPanel = shiny::mainPanel(
-        width = 10,
-        shiny::fluidRow(
-          shiny::column(
-            width = 6,
-            echarts4r::echarts4rOutput(ns("output_cv_maps_1")),
-          ),
-          shiny::column(
-            width = 6,
-            echarts4r::echarts4rOutput(ns("output_cv_maps_2")),
-          )
+      )
+    ) # end of tagList
+  }) # end of cv inputs ui
+  
+  # output rendering echarts for cv
+  output$mod_cv_container <- shiny::renderUI({
+    # get the ns
+    ns <- session$ns
+    shiny::tagList(
+      shiny::fluidRow(
+        shiny::column(
+          width = 6,
+          echarts4r::echarts4rOutput(ns("output_cv_maps_1")),
         ),
-        shiny::fluidRow(
-          shiny::column(
-            width = 6,
-            echarts4r::echarts4rOutput(ns("output_cv_maps_3"))
-          ),
-          shiny::column(
-            width = 6,
-            echarts4r::echarts4rOutput(ns("output_cv_maps_4"))
-          )
+        shiny::column(
+          width = 6,
+          echarts4r::echarts4rOutput(ns("output_cv_maps_2")),
         )
-      ) # END of mainPanel
+      ),
+      shiny::fluidRow(
+        shiny::column(
+          width = 6,
+          echarts4r::echarts4rOutput(ns("output_cv_maps_3"))
+        ),
+        shiny::column(
+          width = 6,
+          echarts4r::echarts4rOutput(ns("output_cv_maps_4"))
+        )
+      )
     )
-  }) # END of renderUI
+  })
 
   # reactives
   # data reactive
@@ -108,15 +117,7 @@ mod_cv <- function(input, output, session, lang) {
       shiny::need(input$cv_var, "no cv statistic selected yet"),
       shiny::need(input$cv_date, "no cv date selected yet")
     )
-    # open, filter and return the stat-date data
-    arrow_sink <- arrow::S3FileSystem$create(
-      access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
-      secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-      scheme = "https",
-      endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
-      region = ""
-    )$cd("meteoland-spain-app-pngs")
-
+    # arrow data
     arrow::open_dataset(
       arrow_sink,
       factory_options = list(

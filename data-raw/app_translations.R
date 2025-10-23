@@ -71,12 +71,36 @@ app_translations <- tibble::tribble(
 # source other data-raw scripts needed
 source("data-raw/cv_assets.R")
 
+# province names
+province_names <- arrow::s3_bucket(
+  "meteoland-spain-app-pngs",
+  access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+  secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+  scheme = "https",
+  endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
+  region = ""
+) |>
+  arrow::open_dataset(
+    factory_options = list(
+      selector_ignore_prefixes = c(
+        "daily_interpolated_meteo_cvs",
+        "daily_interpolated_meteo_bitmaps"
+      )
+    )
+  ) |>
+  dplyr::select(provincia) |>
+  dplyr::distinct() |>
+  dplyr::arrange(provincia) |>
+  dplyr::pull(provincia, as_vector = TRUE)
+
 # internal data for package
 usethis::use_data(
   # app_translations
   app_translations,
   # cv json (from cv_assets.R)
   interpolators_geojson,
+  # province names
+  province_names,
   # opts
   internal = TRUE, overwrite = TRUE
 )

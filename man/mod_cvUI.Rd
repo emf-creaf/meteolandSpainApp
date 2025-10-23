@@ -7,7 +7,7 @@
 \usage{
 mod_cvUI(id)
 
-mod_cv(input, output, session, lang)
+mod_cv(input, output, session, arrow_sink, lang)
 }
 \arguments{
 \item{id}{shiny id}
@@ -17,6 +17,8 @@ mod_cv(input, output, session, lang)
 \item{output}{internal}
 
 \item{session}{internal}
+
+\item{arrow_sink}{bucket s3 filesystem}
 
 \item{lang}{lang selected}
 }
