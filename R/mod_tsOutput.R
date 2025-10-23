@@ -281,7 +281,7 @@ mod_ts <- function(
   was_running <- FALSE
   shiny::observe({
     waiter_ts <- waiter::Waiter$new(
-      id = ns("ts_hostess"),
+      id = NULL,
       html = shiny::tagList(
         hostess_ts$get_loader(),
         shiny::br(),
@@ -319,8 +319,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         Precipitation, symbol = "none",
         name = translate_app("Precipitation", lang()),
@@ -355,8 +355,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MeanTemperature, symbol = "none",
         name = translate_app("MeanTemperature", lang()),
@@ -390,8 +390,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MinTemperature, symbol = "none",
         name = translate_app("MinTemperature", lang()),
@@ -425,8 +425,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MaxTemperature, symbol = "none",
         name = translate_app("MaxTemperature", lang()),
@@ -460,8 +460,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         ThermalAmplitude, symbol = "none",
         name = translate_app("ThermalAmplitude", lang()),
@@ -496,8 +496,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MeanRelativeHumidity, symbol = "none",
         name = translate_app("MeanRelativeHumidity", lang()),
@@ -531,8 +531,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MinRelativeHumidity, symbol = "none",
         name = translate_app("MinRelativeHumidity", lang()),
@@ -566,8 +566,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         MaxRelativeHumidity, symbol = "none",
         name = translate_app("MaxRelativeHumidity", lang()),
@@ -602,8 +602,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         Radiation, symbol = "none",
         name = translate_app("Radiation", lang()),
@@ -638,8 +638,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         PET, symbol = "none",
         name = translate_app("PET", lang()),
@@ -674,8 +674,8 @@ mod_ts <- function(
     }
 
     ts_data |>
-      dplyr::arrange(date) |>
-      echarts4r::e_charts(date) |>
+      dplyr::arrange(dates) |>
+      echarts4r::e_charts(dates) |>
       echarts4r::e_line(
         WindSpeed, symbol = "none",
         name = translate_app("WindSpeed", lang()),

@@ -159,7 +159,8 @@ meteoland_spain_app <- function() {
     )
     cv_reactives <- shiny::callModule(
       mod_cv, "cv_ui",
-      lang
+      arrow_sink = meteoland_bucket,
+      lang = lang
     )
     shiny::callModule(
       mod_techSpecs, "tech_specs_output",

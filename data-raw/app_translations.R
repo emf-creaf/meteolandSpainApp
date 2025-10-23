@@ -4,7 +4,7 @@ app_translations <- tibble::tribble(
   ~text_id, ~translation_cat, ~translation_eng, ~translation_spa,
   # tabs translations
   "main_tab_translation", "Explora", "Explore", "Explora",
-  "download_tab_translation", "Descarrega", "Download", "Descarga",
+  "ts_tab_translation", "Sèries temporals", "Timeseries", "Series temporales",
   "cv_tab_translation", "Validacions creuades", "Cross Validations", "Validaciones cruzadas",
   "tech_specs_tab_translation", "Especificacions tècniques", "Technical specifications", "Especificaciones técnicas",
   # variables
@@ -31,10 +31,13 @@ app_translations <- tibble::tribble(
   "r2", "R quadrat", "R squared", "R cuadrado",
   "n_stations", "Nombre d'estacions", "Number of stations", "Número de estaciones",
   # user_inputs
-  "user_var_date_title", "Mapa", "Map controls", "Mapa",
+  "map_controls", "Mapa", "Map controls", "Mapa",
   "user_var", "Variable:", "Variable:", "Variable:",
   "user_date", "Data:", "Date:", "Fecha:",
-  "user_ts_title", "Sèries temporals", "Time series controls", "Series temporales",
+  "user_agg", "Afegeix per província", "Aggregate by province", "Agregar por provincia",
+  "ts_controls", "Sèries temporals", "Time series controls", "Series temporales",
+  "user_ts_type", "Calcular per coordenades", "Calculate for coordinates", "Calcular para coordenadas",
+  "user_province", "Provincia:", "Province:", "Provincia:",
   "user_longitude", "Longitud", "Longitude", "Longitud",
   "user_latitude", "Latitud", "Latitude", "Latitud",
   "user_longitude_help", "La longitud ha d'estar entre -9.5 i 4", "Longitude must be between -9.5 and 4", "La longitud debe estar entre -9.5 y 4",
@@ -45,6 +48,7 @@ app_translations <- tibble::tribble(
   "user_info", "Info:", "Info:", "Info:",
   "user_info_p1", "El mapa té una resolució de 2 km²", "Map has a resolution of 2 km²", "El mapa tiene una resolucion de 2 km²",
   "user_info_p2", "Les sèries temporals es calculen a una resolució de 500 m²", "Time series are calculated at a 500 m² resolution", "Las series temporales se calculan a una resolución de 500 m²",
+  "cv_controls", "Validacions creuades", "Cross Validations controls", "Validaciones cruzadas",
   # download outputs
   "download_maps_title", "Descarrega de mapas", "Maps download", "Descarga de mapas",
   "download_maps_text", "Els mapes diaris a 500 m² estan disponibles en el repositori de dades públiques de l'EMF.", "Daily maps at 500 m² resolution are available at the public EMF data repository.", "Los mapas diarios a resolucion de 500 m² están disponibles en el repositorio de datos públicos de la EMF.",

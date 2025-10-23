@@ -34,6 +34,8 @@ mod_cvUI <- function(id) {
 mod_cv <- function(input, output, session, arrow_sink, lang) {
   # cv inputs
   output$inputs_cv <- shiny::renderUI({
+    # get the ns
+    ns <- session$ns
     # precalculated choices
     cv_date_choices <- seq(Sys.Date() - 370, Sys.Date() - 5, by = "day") |>
       as.Date(format = '%j', origin = as.Date('1970-01-01')) |>
@@ -50,7 +52,7 @@ mod_cv <- function(input, output, session, arrow_sink, lang) {
       ), lang()))
 
     shiny::tagList(
-      shiny::h4(translate_app("map_controls", lang())),
+      shiny::h4(translate_app("cv_controls", lang())),
       shiny::br(),
       shiny::fluidRow(
         shiny::column(
