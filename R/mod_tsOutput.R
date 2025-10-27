@@ -81,7 +81,7 @@ mod_ts <- function(
           # aggregation input
           shinyWidgets::materialSwitch(
             ns("user_ts_type"), label = translate_app("user_ts_type", lang()),
-            value = FALSE
+            value = FALSE, status = "info"
           ),
           shiny::conditionalPanel(
             condition = "input.user_ts_type == false", ns = ns,
