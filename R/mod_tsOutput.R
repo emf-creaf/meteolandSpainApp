@@ -18,11 +18,11 @@ mod_tsOutput <- function(id) {
             "MinTemperature",
             "MaxTemperature",
             "ThermalAmplitude",
+            "Radiation",
             "MeanRelativeHumidity",
             "MinRelativeHumidity",
             "MaxRelativeHumidity",
             "Precipitation",
-            "Radiation",
             "WindSpeed",
             "PET"
           ),
@@ -289,17 +289,17 @@ mod_ts <- function(
       echarts4r::e_line(
         Precipitation, symbol = "none",
         name = translate_app("Precipitation", lang()),
-        lineStyle = list(color = "#2575CF"),
-        itemStyle = list(color = "#2575CF"),
+        lineStyle = list(color = "#4ef0ff"),
+        itemStyle = list(color = "#4ef0ff"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#2575CF"),
-              list(offset = 0.25, color = "#2575CF8F"),
-              list(offset = 0.5, color = "#2575CF4F"),
-              list(offset = 0.75, color = "#2575CF2F"),
-              list(offset = 1, color = "#2575CF00")
+              list(offset = 0, color = "#4ef0ff"),
+              list(offset = 0.25, color = "#00b6de"),
+              list(offset = 0.5, color = "#007db4"),
+              list(offset = 0.75, color = "#00458b"),
+              list(offset = 1, color = "#0e005b")
             )
           ),
           opacity = 0.7
@@ -325,17 +325,17 @@ mod_ts <- function(
       echarts4r::e_line(
         MeanTemperature, symbol = "none",
         name = translate_app("MeanTemperature", lang()),
-        lineStyle = list(color = "#C75C00"),
-        itemStyle = list(color = "#C75C00"),
+        lineStyle = list(color = "#fcff41"),
+        itemStyle = list(color = "#fcff41"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#C75C00"),
-              list(offset = 0.25, color = "#C75C008F"),
-              list(offset = 0.5, color = "#C75C004F"),
-              list(offset = 0.75, color = "#C75C002F"),
-              list(offset = 1, color = "#C75C0000")
+              list(offset = 0, color = "#fcff41"),
+              list(offset = 0.25, color = "#ffd350"),
+              list(offset = 0.5, color = "#ffa726"),
+              list(offset = 0.75, color = "#fc7600"),
+              list(offset = 1, color = "#ff0000")
             )
           ),
           opacity = 0.7
@@ -360,17 +360,17 @@ mod_ts <- function(
       echarts4r::e_line(
         MinTemperature, symbol = "none",
         name = translate_app("MinTemperature", lang()),
-        lineStyle = list(color = "#C75C00"),
-        itemStyle = list(color = "#C75C00"),
+        lineStyle = list(color = "#fcff41"),
+        itemStyle = list(color = "#fcff41"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#C75C00"),
-              list(offset = 0.25, color = "#C75C008F"),
-              list(offset = 0.5, color = "#C75C004F"),
-              list(offset = 0.75, color = "#C75C002F"),
-              list(offset = 1, color = "#C75C0000")
+              list(offset = 0, color = "#fcff41"),
+              list(offset = 0.25, color = "#ffd350"),
+              list(offset = 0.5, color = "#ffa726"),
+              list(offset = 0.75, color = "#fc7600"),
+              list(offset = 1, color = "#ff0000")
             )
           ),
           opacity = 0.7
@@ -395,17 +395,17 @@ mod_ts <- function(
       echarts4r::e_line(
         MaxTemperature, symbol = "none",
         name = translate_app("MaxTemperature", lang()),
-        lineStyle = list(color = "#C75C00"),
-        itemStyle = list(color = "#C75C00"),
+        lineStyle = list(color = "#fcff41"),
+        itemStyle = list(color = "#fcff41"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#C75C00"),
-              list(offset = 0.25, color = "#C75C008F"),
-              list(offset = 0.5, color = "#C75C004F"),
-              list(offset = 0.75, color = "#C75C002F"),
-              list(offset = 1, color = "#C75C0000")
+              list(offset = 0, color = "#fcff41"),
+              list(offset = 0.25, color = "#ffd350"),
+              list(offset = 0.5, color = "#ffa726"),
+              list(offset = 0.75, color = "#fc7600"),
+              list(offset = 1, color = "#ff0000")
             )
           ),
           opacity = 0.7
@@ -430,17 +430,17 @@ mod_ts <- function(
       echarts4r::e_line(
         ThermalAmplitude, symbol = "none",
         name = translate_app("ThermalAmplitude", lang()),
-        lineStyle = list(color = "#C75C00"),
-        itemStyle = list(color = "#C75C00"),
+        lineStyle = list(color = "#fcff41"),
+        itemStyle = list(color = "#fcff41"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#C75C00"),
-              list(offset = 0.25, color = "#C75C008F"),
-              list(offset = 0.5, color = "#C75C004F"),
-              list(offset = 0.75, color = "#C75C002F"),
-              list(offset = 1, color = "#C75C0000")
+              list(offset = 0, color = "#fcff41"),
+              list(offset = 0.25, color = "#ffd350"),
+              list(offset = 0.5, color = "#ffa726"),
+              list(offset = 0.75, color = "#fc7600"),
+              list(offset = 1, color = "#ff0000")
             )
           ),
           opacity = 0.7
@@ -466,17 +466,17 @@ mod_ts <- function(
       echarts4r::e_line(
         MeanRelativeHumidity, symbol = "none",
         name = translate_app("MeanRelativeHumidity", lang()),
-        lineStyle = list(color = "#00abfa"),
-        itemStyle = list(color = "#00abfa"),
+        lineStyle = list(color = "#4ef0ff"),
+        itemStyle = list(color = "#4ef0ff"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#00abfa"),
-              list(offset = 0.25, color = "#00abfa8F"),
-              list(offset = 0.5, color = "#00abfa4F"),
-              list(offset = 0.75, color = "#00abfa2F"),
-              list(offset = 1, color = "#00abfa00")
+              list(offset = 0, color = "#4ef0ff"),
+              list(offset = 0.25, color = "#00b6de"),
+              list(offset = 0.5, color = "#007db4"),
+              list(offset = 0.75, color = "#00458b"),
+              list(offset = 1, color = "#0e005b")
             )
           ),
           opacity = 0.7
@@ -501,17 +501,17 @@ mod_ts <- function(
       echarts4r::e_line(
         MinRelativeHumidity, symbol = "none",
         name = translate_app("MinRelativeHumidity", lang()),
-        lineStyle = list(color = "#00abfa"),
-        itemStyle = list(color = "#00abfa"),
+        lineStyle = list(color = "#4ef0ff"),
+        itemStyle = list(color = "#4ef0ff"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#00abfa"),
-              list(offset = 0.25, color = "#00abfa8F"),
-              list(offset = 0.5, color = "#00abfa4F"),
-              list(offset = 0.75, color = "#00abfa2F"),
-              list(offset = 1, color = "#00abfa00")
+              list(offset = 0, color = "#4ef0ff"),
+              list(offset = 0.25, color = "#00b6de"),
+              list(offset = 0.5, color = "#007db4"),
+              list(offset = 0.75, color = "#00458b"),
+              list(offset = 1, color = "#0e005b")
             )
           ),
           opacity = 0.7
@@ -536,17 +536,17 @@ mod_ts <- function(
       echarts4r::e_line(
         MaxRelativeHumidity, symbol = "none",
         name = translate_app("MaxRelativeHumidity", lang()),
-        lineStyle = list(color = "#00abfa"),
-        itemStyle = list(color = "#00abfa"),
+        lineStyle = list(color = "#4ef0ff"),
+        itemStyle = list(color = "#4ef0ff"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#00abfa"),
-              list(offset = 0.25, color = "#00abfa8F"),
-              list(offset = 0.5, color = "#00abfa4F"),
-              list(offset = 0.75, color = "#00abfa2F"),
-              list(offset = 1, color = "#00abfa00")
+              list(offset = 0, color = "#4ef0ff"),
+              list(offset = 0.25, color = "#00b6de"),
+              list(offset = 0.5, color = "#007db4"),
+              list(offset = 0.75, color = "#00458b"),
+              list(offset = 1, color = "#0e005b")
             )
           ),
           opacity = 0.7
@@ -572,17 +572,17 @@ mod_ts <- function(
       echarts4r::e_line(
         Radiation, symbol = "none",
         name = translate_app("Radiation", lang()),
-        lineStyle = list(color = "#ff9100"),
-        itemStyle = list(color = "#ff9100"),
+        lineStyle = list(color = "#fcff41"),
+        itemStyle = list(color = "#fcff41"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#ff9100"),
-              list(offset = 0.25, color = "#ff91008F"),
-              list(offset = 0.5, color = "#ff91004F"),
-              list(offset = 0.75, color = "#ff91002F"),
-              list(offset = 1, color = "#ff910000")
+              list(offset = 0, color = "#fcff41"),
+              list(offset = 0.25, color = "#ffd350"),
+              list(offset = 0.5, color = "#ffa726"),
+              list(offset = 0.75, color = "#fc7600"),
+              list(offset = 1, color = "#ff0000")
             )
           ),
           opacity = 0.7
@@ -608,17 +608,17 @@ mod_ts <- function(
       echarts4r::e_line(
         PET, symbol = "none",
         name = translate_app("PET", lang()),
-        lineStyle = list(color = "#94C96E"),
-        itemStyle = list(color = "#94C96E"),
+        lineStyle = list(color = "#a2ffb6"),
+        itemStyle = list(color = "#a2ffb6"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#94C96E"),
-              list(offset = 0.25, color = "#94C96E8F"),
-              list(offset = 0.5, color = "#94C96E4F"),
-              list(offset = 0.75, color = "#94C96E2F"),
-              list(offset = 1, color = "#94C96E00")
+              list(offset = 0, color = "#a2ffb6"),
+              list(offset = 0.25, color = "#00e25d"),
+              list(offset = 0.5, color = "#00b33b"),
+              list(offset = 0.75, color = "#00861b"),
+              list(offset = 1, color = "#025b00")
             )
           ),
           opacity = 0.7
@@ -644,17 +644,18 @@ mod_ts <- function(
       echarts4r::e_line(
         WindSpeed, symbol = "none",
         name = translate_app("WindSpeed", lang()),
-        lineStyle = list(color = "#94C96E"),
-        itemStyle = list(color = "#94C96E"),
+        #b007ff, #ca55ff, #e180ff, #f4a7ff, #ffd0fe);
+        lineStyle = list(color = "#ffd0fe"),
+        itemStyle = list(color = "#ffd0fe"),
         areaStyle = list(
           color = list(
             type = "linear", x = 0, y = 0, x2 = 0, y2 = 1,
             colorStops = list(
-              list(offset = 0, color = "#94C96E"),
-              list(offset = 0.25, color = "#94C96E8F"),
-              list(offset = 0.5, color = "#94C96E4F"),
-              list(offset = 0.75, color = "#94C96E2F"),
-              list(offset = 1, color = "#94C96E00")
+              list(offset = 0, color = "#ffd0fe"),
+              list(offset = 0.25, color = "#f4a7ff"),
+              list(offset = 0.5, color = "#e180ff"),
+              list(offset = 0.75, color = "#ca55ff"),
+              list(offset = 1, color = "#b007ff")
             )
           ),
           opacity = 0.7
