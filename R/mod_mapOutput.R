@@ -115,7 +115,7 @@ mod_map <- function(
             shiny::actionButton(
               ns("download_maps_link"), translate_app("download_maps_link", lang()),
               icon = shiny::icon("up-right-from-square"),
-              onclick = "window.open('https://data-emf.creaf.cat/public/gpkg/daily_modelled_forests/', '_blank')"
+              onclick = "window.open('https://data-emf.creaf.cat/public/gpkg/daily_interpolated_meteo/', '_blank')"
             )
           )
         )
