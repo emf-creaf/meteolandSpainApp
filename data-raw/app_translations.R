@@ -3,7 +3,7 @@
 app_translations <- tibble::tribble(
   ~text_id, ~translation_cat, ~translation_eng, ~translation_spa,
   # tabs translations
-  "main_tab_translation", "Explora", "Explore", "Explora",
+  "main_tab_translation", "Mapa diari", "Daily map", "Mapa diario",
   "ts_tab_translation", "Sèries temporals", "Timeseries", "Series temporales",
   "cv_tab_translation", "Validacions creuades", "Cross Validations", "Validaciones cruzadas",
   "tech_specs_tab_translation", "Especificacions tècniques", "Technical specifications", "Especificaciones técnicas",
