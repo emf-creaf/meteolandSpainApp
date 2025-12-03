@@ -34,7 +34,7 @@ app_translations <- tibble::tribble(
   "map_controls", "Mapa", "Map controls", "Mapa",
   "user_var", "Variable:", "Variable:", "Variable:",
   "user_date", "Data:", "Date:", "Fecha:",
-  "user_agg", "Afegeix per província", "Aggregate by province", "Agregar por provincia",
+  "user_agg", "Agregació:", "Aggregation:", "Agregación:",
   "ts_controls", "Sèries temporals", "Time series controls", "Series temporales",
   "user_ts_type", "Calcular per coordenades", "Calculate for coordinates", "Calcular para coordenadas",
   "user_province", "Provincia:", "Province:", "Provincia:",
@@ -49,6 +49,10 @@ app_translations <- tibble::tribble(
   "user_info_p1", "El mapa té una resolució de 2 km²", "Map has a resolution of 2 km²", "El mapa tiene una resolucion de 2 km²",
   "user_info_p2", "Les sèries temporals es calculen a una resolució de 500 m²", "Time series are calculated at a 500 m² resolution", "Las series temporales se calculan a una resolución de 500 m²",
   "cv_controls", "Validacions creuades", "Cross Validations controls", "Validaciones cruzadas",
+  # aggregation
+  "cont", "Cap", "None", "Ninguna",
+  "comarca", "Comarques", "Regions", "Comarcas",
+  "provincia", "Provincies", "Provinces", "Provincias",
   # download outputs
   "download_maps_title", "Descarrega de mapas", "Maps download", "Descarga de mapas",
   "download_maps_text", "Els mapes diaris a 500 m² estan disponibles en el repositori de dades públiques de l'EMF.", "Daily maps at 500 m² resolution are available at the public EMF data repository.", "Los mapas diarios a resolucion de 500 m² están disponibles en el repositorio de datos públicos de la EMF.",
@@ -88,14 +92,37 @@ province_names <- arrow::s3_bucket(
     factory_options = list(
       selector_ignore_prefixes = c(
         "daily_interpolated_meteo_cvs",
-        "daily_interpolated_meteo_bitmaps"
+        "daily_interpolated_meteo_bitmaps",
+        "daily_interpolated_meteo_timeseries_comarca"
       )
     )
   ) |>
-  dplyr::select(provincia) |>
+  dplyr::select(name) |>
   dplyr::distinct() |>
-  dplyr::arrange(provincia) |>
-  dplyr::pull(provincia, as_vector = TRUE)
+  dplyr::arrange(name) |>
+  dplyr::pull(name, as_vector = TRUE)
+
+region_names <- arrow::s3_bucket(
+  "meteoland-spain-app-pngs",
+  access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+  secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
+  scheme = "https",
+  endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
+  region = ""
+) |>
+  arrow::open_dataset(
+    factory_options = list(
+      selector_ignore_prefixes = c(
+        "daily_interpolated_meteo_cvs",
+        "daily_interpolated_meteo_bitmaps",
+        "daily_interpolated_meteo_timeseries_provincia"
+      )
+    )
+  ) |>
+  dplyr::select(name) |>
+  dplyr::distinct() |>
+  dplyr::arrange(name) |>
+  dplyr::pull(name, as_vector = TRUE)
 
 # internal data for package
 usethis::use_data(
@@ -103,8 +130,9 @@ usethis::use_data(
   app_translations,
   # cv json (from cv_assets.R)
   interpolators_geojson,
-  # province names
+  # agg names
   province_names,
+  region_names,
   # opts
   internal = TRUE, overwrite = TRUE
 )
