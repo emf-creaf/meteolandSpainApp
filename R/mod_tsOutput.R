@@ -70,6 +70,14 @@ mod_ts <- function(
 
   # ts inputs
   output$inputs_ts <- shiny::renderUI({
+    aggregation_choices <- list(
+      "provincia" = province_names,
+      "comarca" = region_names
+    ) |>
+      purrr::set_names(c(
+        translate_app("user_province", lang()),
+        translate_app("user_region", lang())
+      ))
     # tagList creating the draggable absolute panel
     shiny::tagList(
       # first row of inputs, variable and dates
@@ -87,9 +95,9 @@ mod_ts <- function(
             condition = "input.user_ts_type == false", ns = ns,
             shiny::br(),
             shinyWidgets::pickerInput(
-              ns("user_province"), label = translate_app("user_province", lang()),
-              choices = province_names,
-              selected = province_names[1],
+              ns("user_ts_agg"), label = translate_app("user_ts_agg", lang()),
+              choices = aggregation_choices,
+              selected = aggregation_choices[[1]][1],
               multiple = FALSE,
               options = shinyWidgets::pickerOptions(
                 actionsBox = FALSE,
@@ -137,10 +145,10 @@ mod_ts <- function(
   }) # end of ts inputs ui
 
   # province ts data
-  province_data <- shiny::reactive({
+  aggregation_data <- shiny::reactive({
     # only run when inputs are populated
     shiny::validate(
-      shiny::need(input$user_province, "Missing province")
+      shiny::need(input$user_ts_agg, "Missing admin div")
     )
 
     # show hostess
@@ -150,7 +158,7 @@ mod_ts <- function(
         hostess_ts$get_loader(),
         shiny::br(),
         shiny::p(glue::glue(
-          "{translate_app('getting_data_for', lang())} {input$user_province}"
+          "{translate_app('getting_data_for', lang())} {input$user_ts_agg}"
         )),
         shiny::p(translate_app("please_wait", lang()))
       ),
@@ -161,7 +169,7 @@ mod_ts <- function(
     hostess_ts$start()
     on.exit(hostess_ts$close(), add = TRUE)
 
-    province_sel <- input$user_province
+    aggregation_sel <- input$user_ts_agg
     # arrow data
     arrow::open_dataset(
       arrow_sink,
@@ -172,16 +180,16 @@ mod_ts <- function(
         )
       )
     ) |>
-      dplyr::filter(provincia == province_sel) |>
+      dplyr::filter(name == aggregation_sel) |>
       dplyr::as_tibble()
   }) |>
     shiny::bindCache(
       # input$user_var,
-      input$user_province,
+      input$user_ts_agg,
       cache = "session"
     ) |>
     shiny::bindEvent(
-      input$user_province
+      input$user_ts_agg
     )
 
 
@@ -274,7 +282,7 @@ mod_ts <- function(
   # echart outputs
   output$ts_Precipitation <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -310,7 +318,7 @@ mod_ts <- function(
 
   output$ts_MeanTemperature <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -345,7 +353,7 @@ mod_ts <- function(
   })
   output$ts_MinTemperature <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -380,7 +388,7 @@ mod_ts <- function(
   })
   output$ts_MaxTemperature <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -415,7 +423,7 @@ mod_ts <- function(
   })
   output$ts_ThermalAmplitude <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -451,7 +459,7 @@ mod_ts <- function(
 
   output$ts_MeanRelativeHumidity <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -486,7 +494,7 @@ mod_ts <- function(
   })
   output$ts_MinRelativeHumidity <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -521,7 +529,7 @@ mod_ts <- function(
   })
   output$ts_MaxRelativeHumidity <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -557,7 +565,7 @@ mod_ts <- function(
 
   output$ts_Radiation <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -593,7 +601,7 @@ mod_ts <- function(
 
   output$ts_PET <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -629,7 +637,7 @@ mod_ts <- function(
 
   output$ts_WindSpeed <- echarts4r::renderEcharts4r({
     if (isFALSE(input$user_ts_type)) {
-      ts_data <- province_data()
+      ts_data <- aggregation_data()
     } else {
       shiny::validate(
         shiny::need(ts_coords_data$result(), "No time series data yet, press the button")
@@ -672,9 +680,9 @@ mod_ts <- function(
     content = function(file) {
       if (isFALSE(input$user_ts_type)) {
         shiny::validate(
-          shiny::need(province_data(), "no provinces data yet")
+          shiny::need(aggregation_data(), "no provinces data yet")
         )
-        province_data() |>
+        aggregation_data() |>
           write.csv(file)
       } else {
         shiny::validate(
