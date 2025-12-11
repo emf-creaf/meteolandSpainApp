@@ -4,8 +4,8 @@ app_translations <- tibble::tribble(
   ~text_id, ~translation_cat, ~translation_eng, ~translation_spa,
   # tabs translations
   "main_tab_translation", "Mapa diari", "Daily map", "Mapa diario",
-  "ts_tab_translation", "Sèries temporals", "Timeseries", "Series temporales",
-  "cv_tab_translation", "Validacions creuades", "Cross Validations", "Validaciones cruzadas",
+  "ts_tab_translation", "Sèries temporals", "Time series", "Series temporales",
+  "cv_tab_translation", "Validacions creuades", "Cross validations", "Validaciones cruzadas",
   "tech_specs_tab_translation", "Especificacions tècniques", "Technical specifications", "Especificaciones técnicas",
   # variables
   "MeanTemperature", "Temperatura mitjana [°C]", "Mean Temperature [°C]", "Temperatura media [°C]",
@@ -38,8 +38,8 @@ app_translations <- tibble::tribble(
   "ts_controls", "Sèries temporals", "Time series controls", "Series temporales",
   "user_ts_type", "Calcular per coordenades", "Calculate for coordinates", "Calcular para coordenadas",
   "user_province", "Provincies", "Provinces", "Provincias",
-  "user_region", "Comarques", "Regions", "Comarcas",
-  "user_ts_agg", "Selecciona una regió:", "Select a region:", "Selecciona una región:",
+  "user_region", "Comarques", "Counties", "Comarcas",
+  "user_ts_agg", "Selecciona una provincia o regió:", "Select a province or county:", "Selecciona una provincia o comarca:",
   "user_longitude", "Longitud", "Longitude", "Longitud",
   "user_latitude", "Latitud", "Latitude", "Latitud",
   "user_longitude_help", "La longitud ha d'estar entre -9.5 i 4", "Longitude must be between -9.5 and 4", "La longitud debe estar entre -9.5 y 4",
@@ -53,7 +53,7 @@ app_translations <- tibble::tribble(
   "cv_controls", "Validacions creuades", "Cross Validations controls", "Validaciones cruzadas",
   # aggregation
   "cont", "Cap", "None", "Ninguna",
-  "comarca", "Comarques", "Regions", "Comarcas",
+  "comarca", "Comarques", "Counties", "Comarcas",
   "provincia", "Provincies", "Provinces", "Provincias",
   # download outputs
   "download_maps_title", "Descarrega de mapas", "Maps download", "Descarga de mapas",
