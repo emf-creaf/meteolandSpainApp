@@ -103,7 +103,8 @@ mod_ts <- function(
               multiple = FALSE,
               options = shinyWidgets::pickerOptions(
                 actionsBox = FALSE,
-                tickIcon = "glyphicon-ok-sign"
+                tickIcon = "glyphicon-ok-sign",
+                liveSearch = TRUE, liveSearchNormalize = TRUE
               )
             )
           ),
