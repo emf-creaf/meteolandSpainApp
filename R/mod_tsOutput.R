@@ -71,9 +71,11 @@ mod_ts <- function(
   # ts inputs
   output$inputs_ts <- shiny::renderUI({
     aggregation_choices <- list(
-      "provincia" = province_names,
-      "comarca" = region_names,
-      "municipio" = municipality_names
+      "provincia" = purrr::set_names(province_metadata, stringr::str_split_i(province_metadata, "_", 1)),
+      # municipio and comarca has names already generated to include province for
+      # extra info (and disambiguation in the case of the munis)
+      "comarca" = purrr::set_names(region_metadata, region_names),
+      "municipio" = purrr::set_names(municipality_metadata, municipality_names)
     ) |>
       purrr::set_names(c(
         translate_app("user_province", lang()),
@@ -154,6 +156,11 @@ mod_ts <- function(
       shiny::need(input$user_ts_agg, "Missing admin div")
     )
 
+    aggregation_sel <- input$user_ts_agg
+    agg_name <- stringr::str_split_i(aggregation_sel, "_", 1)
+    agg_province <- stringr::str_split_i(aggregation_sel, "_", 2)
+    agg_level <- stringr::str_split_i(aggregation_sel, "_", 3)
+
     # show hostess
     waiter_ts <- waiter::Waiter$new(
       id = NULL,
@@ -161,7 +168,7 @@ mod_ts <- function(
         hostess_ts$get_loader(),
         shiny::br(),
         shiny::p(glue::glue(
-          "{translate_app('getting_data_for', lang())} {input$user_ts_agg}"
+          "{translate_app('getting_data_for', lang())} {agg_name} ({translate_app(agg_level, lang())})"
         )),
         shiny::p(translate_app("please_wait", lang()))
       ),
@@ -172,13 +179,11 @@ mod_ts <- function(
     hostess_ts$start()
     on.exit(hostess_ts$close(), add = TRUE)
 
-    aggregation_sel <- input$user_ts_agg
-
     # duckdb query
     date_query <- glue::glue("
       SELECT *
       FROM read_parquet('s3://meteoland-spain-app-pngs/daily_interpolated_meteo_timeseries_*.parquet')
-      WHERE name = '{aggregation_sel}';
+      WHERE name = '{agg_name}' AND province_code = '{agg_province}' AND admin_level = '{agg_level}';
     ")
 
     DBI::dbGetQuery(duckdb_conn, date_query) |>

@@ -84,7 +84,7 @@ app_translations <- tibble::tribble(
 source("data-raw/cv_assets.R")
 
 # province names
-province_names <- arrow::s3_bucket(
+province_dict <- arrow::s3_bucket(
   "meteoland-spain-app-pngs",
   access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
   secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
@@ -102,12 +102,18 @@ province_names <- arrow::s3_bucket(
       )
     )
   ) |>
-  dplyr::select(name) |>
+  dplyr::select(name, province_code) |>
   dplyr::distinct() |>
   dplyr::arrange(name) |>
-  dplyr::pull(name, as_vector = TRUE)
+  dplyr::collect()
 
-region_names <- arrow::s3_bucket(
+province_metadata <- province_dict |>
+  dplyr::mutate(
+    metadata = paste(name, province_code, "provincia", sep = "_")
+  ) |>
+  dplyr::pull(metadata)
+
+region_metadata <- arrow::s3_bucket(
   "meteoland-spain-app-pngs",
   access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
   secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
@@ -125,12 +131,17 @@ region_names <- arrow::s3_bucket(
       )
     )
   ) |>
-  dplyr::select(name) |>
+  dplyr::select(name, province_code) |>
   dplyr::distinct() |>
   dplyr::arrange(name) |>
-  dplyr::pull(name, as_vector = TRUE)
+  dplyr::mutate(
+    metadata = paste(name, province_code, "comarca", sep = "_")
+  ) |>
+  dplyr::pull(metadata, as_vector = TRUE)
 
-municipality_names <- arrow::s3_bucket(
+region_names <- glue::glue("{stringr::str_split_i(region_metadata, '_', 1)} ({meteolandSpainApp:::get_province_from_code(stringr::str_split_i(region_metadata, '_', 2))})")
+
+municipality_metadata <- arrow::s3_bucket(
   "meteoland-spain-app-pngs",
   access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
   secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
@@ -148,10 +159,15 @@ municipality_names <- arrow::s3_bucket(
       )
     )
   ) |>
-  dplyr::select(name) |>
+  dplyr::select(name, province_code) |>
   dplyr::distinct() |>
   dplyr::arrange(name) |>
-  dplyr::pull(name, as_vector = TRUE)
+  dplyr::mutate(
+    metadata = paste(name, province_code, "municipio", sep = "_")
+  ) |>
+  dplyr::pull(metadata, as_vector = TRUE)
+
+municipality_names <- glue::glue("{stringr::str_split_i(municipality_metadata, '_', 1)} ({meteolandSpainApp:::get_province_from_code(stringr::str_split_i(municipality_metadata, '_', 2))})")
 
 # internal data for package
 usethis::use_data(
@@ -160,9 +176,12 @@ usethis::use_data(
   # cv json (from cv_assets.R)
   interpolators_geojson,
   # agg names
-  province_names,
+  province_metadata,
+  region_metadata,
   region_names,
+  municipality_metadata,
   municipality_names,
+  province_dict,
   # opts
   internal = TRUE, overwrite = TRUE
 )
