@@ -46,7 +46,7 @@ mod_tsOutput <- function(id) {
 #' @param input internal
 #' @param output internal
 #' @param session internal
-#' @param arrow_sink bucket s3 filesystem
+#' @param duckdb_conn duckdb_conn
 #' @param lang lang selected
 #'
 #' @export
@@ -54,7 +54,7 @@ mod_tsOutput <- function(id) {
 #' @rdname mod_tsOutput
 mod_ts <- function(
   input, output, session,
-  arrow_sink,
+  duckdb_conn,
   lang
 ) {
   # get the ns
@@ -72,11 +72,13 @@ mod_ts <- function(
   output$inputs_ts <- shiny::renderUI({
     aggregation_choices <- list(
       "provincia" = province_names,
-      "comarca" = region_names
+      "comarca" = region_names,
+      "municipio" = municipality_names
     ) |>
       purrr::set_names(c(
         translate_app("user_province", lang()),
-        translate_app("user_region", lang())
+        translate_app("user_region", lang()),
+        translate_app("user_municipality", lang())
       ))
     # tagList creating the draggable absolute panel
     shiny::tagList(
@@ -170,27 +172,19 @@ mod_ts <- function(
     on.exit(hostess_ts$close(), add = TRUE)
 
     aggregation_sel <- input$user_ts_agg
-    # arrow data
-    arrow::open_dataset(
-      arrow_sink,
-      factory_options = list(
-        selector_ignore_prefixes = c(
-          "daily_interpolated_meteo_cvs",
-          "daily_interpolated_meteo_bitmaps"
-        )
-      )
-    ) |>
-      dplyr::filter(name == aggregation_sel) |>
+
+    # duckdb query
+    date_query <- glue::glue("
+      SELECT *
+      FROM read_parquet('s3://meteoland-spain-app-pngs/daily_interpolated_meteo_timeseries_*.parquet')
+      WHERE name = '{aggregation_sel}';
+    ")
+
+    DBI::dbGetQuery(duckdb_conn, date_query) |>
       dplyr::as_tibble()
   }) |>
-    shiny::bindCache(
-      # input$user_var,
-      input$user_ts_agg,
-      cache = "session"
-    ) |>
-    shiny::bindEvent(
-      input$user_ts_agg
-    )
+    shiny::bindCache(input$user_ts_agg, cache = "session") |>
+    shiny::bindEvent(input$user_ts_agg)
 
 
   ts_coords_data <- shiny::ExtendedTask$new(

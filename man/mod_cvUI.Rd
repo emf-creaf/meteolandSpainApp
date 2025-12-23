@@ -7,7 +7,7 @@
 \usage{
 mod_cvUI(id)
 
-mod_cv(input, output, session, arrow_sink, lang)
+mod_cv(input, output, session, duckdb_conn, lang)
 }
 \arguments{
 \item{id}{shiny id}
@@ -18,7 +18,7 @@ mod_cv(input, output, session, arrow_sink, lang)
 
 \item{session}{internal}
 
-\item{arrow_sink}{bucket s3 filesystem}
+\item{duckdb_conn}{duckdb_conn}
 
 \item{lang}{lang selected}
 }

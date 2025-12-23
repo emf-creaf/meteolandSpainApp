@@ -178,30 +178,55 @@ meteoland_spain_app <- function() {
     # mapbox token
     mapdeck::set_token(Sys.getenv("MAPBOX_TOKEN"))
 
-    # bucket
-    meteoland_bucket <- arrow::s3_bucket(
-      "meteoland-spain-app-pngs",
-      access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
-      secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-      scheme = "https",
-      endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
-      region = ""
+    # duckdb
+    duckdb_conn <- DBI::dbConnect(duckdb::duckdb())
+    # withr::defer(DBI::dbDisconnect(duckdb_proxy))
+    install_httpfs_statement <- glue::glue_sql(
+      .con = duckdb_proxy,
+      "INSTALL httpfs;"
     )
+    httpfs_statement <- glue::glue_sql(
+      .con = duckdb_conn,
+      "LOAD httpfs;"
+    )
+    install_spatial_statement <- glue::glue_sql(
+      .con = duckdb_conn,
+      "INSTALL spatial;"
+    )
+    spatial_statement <- glue::glue_sql(
+      .con = duckdb_conn,
+      "LOAD spatial;"
+    )
+    credentials_statement <- glue::glue(
+      "CREATE OR REPLACE SECRET secret (
+        TYPE s3,
+        PROVIDER config,
+        KEY_ID '{Sys.getenv('AWS_ACCESS_KEY_ID')}',
+        SECRET '{Sys.getenv('AWS_SECRET_ACCESS_KEY')}',
+        REGION '',
+        ENDPOINT '{Sys.getenv('AWS_S3_ENDPOINT')}'
+      );"
+    )
+    DBI::dbExecute(duckdb_conn, install_httpfs_statement)
+    DBI::dbExecute(duckdb_conn, httpfs_statement)
+    DBI::dbExecute(duckdb_conn, install_spatial_statement)
+    DBI::dbExecute(duckdb_conn, spatial_statement)
+    DBI::dbExecute(duckdb_conn, credentials_statement)
 
     # modules
     map_reactives <- shiny::callModule(
       mod_map, 'map_output',
-      arrow_sink = meteoland_bucket,
+      duckdb_conn = duckdb_conn,
       lang = lang
     )
     ts_reactives <- shiny::callModule(
       mod_ts, 'ts_output',
-      arrow_sink = meteoland_bucket,
+      duckdb_conn = duckdb_conn,
       lang = lang
     )
     cv_reactives <- shiny::callModule(
       mod_cv, "cv_ui",
-      arrow_sink = meteoland_bucket,
+      duckdb_conn = duckdb_conn,
       lang = lang
     )
     shiny::callModule(

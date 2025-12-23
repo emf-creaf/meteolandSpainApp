@@ -25,13 +25,13 @@ mod_cvUI <- function(id) {
 #' @param input internal
 #' @param output internal
 #' @param session internal
-#' @param arrow_sink bucket s3 filesystem
+#' @param duckdb_conn duckdb_conn
 #' @param lang lang selected
 #'
 #' @export
 #'
 #' @rdname mod_cvUI
-mod_cv <- function(input, output, session, arrow_sink, lang) {
+mod_cv <- function(input, output, session, duckdb_conn, lang) {
   # cv inputs
   output$inputs_cv <- shiny::renderUI({
     # get the ns
@@ -119,20 +119,14 @@ mod_cv <- function(input, output, session, arrow_sink, lang) {
       shiny::need(input$cv_var, "no cv statistic selected yet"),
       shiny::need(input$cv_date, "no cv date selected yet")
     )
-    # arrow data
-    arrow::open_dataset(
-      arrow_sink,
-      factory_options = list(
-        selector_ignore_prefixes = c(
-          "daily_interpolated_meteo_bitmaps",
-          "daily_interpolated_meteo_timeseries"
-        )
-      )
-    ) |>
-      dplyr::filter(
-        variable == input$cv_var,
-        dates == as.Date(input$cv_date)
-      ) |>
+    # duckdb query
+    date_query <- glue::glue("
+      SELECT *
+      FROM read_parquet('s3://meteoland-spain-app-pngs/daily_interpolated_meteo_cvs.parquet')
+      WHERE variable = '{input$cv_var}' AND dates = '{input$cv_date}';
+    ")
+
+    DBI::dbGetQuery(duckdb_conn, date_query) |>
       dplyr::as_tibble()
   }) |>
     # bind to cache and to events (same inputs, date and stat)
