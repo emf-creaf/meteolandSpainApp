@@ -183,7 +183,8 @@ mod_ts <- function(
     date_query <- glue::glue("
       SELECT *
       FROM read_parquet('s3://meteoland-spain-app-pngs/daily_interpolated_meteo_timeseries_*.parquet')
-      WHERE name = '{agg_name}' AND province_code = '{agg_province}' AND admin_level = '{agg_level}';
+      WHERE name = '{agg_name}' AND province_code = '{agg_province}' AND admin_level = '{agg_level}'
+        AND dates > '{as.character(Sys.Date() - 371)}';
     ")
 
     DBI::dbGetQuery(duckdb_conn, date_query) |>
