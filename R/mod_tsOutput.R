@@ -253,7 +253,7 @@ mod_ts <- function(
               geom.y > {coords_bbox[['ymin']]} AND
               geom.y < {coords_bbox[['ymax']]} AND
               month = {month_to_query} AND
-              date > '{as.character(Sys.Date() - 371)}'
+              dates > '{as.character(Sys.Date() - 371)}'
             GROUP BY dates
             ;"
           )
