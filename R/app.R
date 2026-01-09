@@ -27,50 +27,11 @@ meteoland_spain_app <- function() {
     )
   )
 
-  #### Mirai daemons ####
-  mirai::daemons(6)
-  mirai::everywhere({
-    library(DBI)
-    library(duckdb)
-    # db preparation
-    duckdb_proxy <<- DBI::dbConnect(duckdb::duckdb())
-    # withr::defer(DBI::dbDisconnect(duckdb_proxy))
-    install_httpfs_statement <- glue::glue_sql(
-      .con = duckdb_proxy,
-      "INSTALL httpfs;"
-    )
-    httpfs_statement <- glue::glue_sql(
-      .con = duckdb_proxy,
-      "LOAD httpfs;"
-    )
-    install_spatial_statement <- glue::glue_sql(
-      .con = duckdb_proxy,
-      "INSTALL spatial;"
-    )
-    spatial_statement <- glue::glue_sql(
-      .con = duckdb_proxy,
-      "LOAD spatial;"
-    )
-    credentials_statement <- glue::glue(
-      "CREATE OR REPLACE SECRET secret (
-        TYPE s3,
-        PROVIDER config,
-        KEY_ID '{Sys.getenv('AWS_ACCESS_KEY_ID')}',
-        SECRET '{Sys.getenv('AWS_SECRET_ACCESS_KEY')}',
-        REGION '',
-        ENDPOINT '{Sys.getenv('AWS_S3_ENDPOINT')}'
-      );"
-    )
-    DBI::dbExecute(duckdb_proxy, install_httpfs_statement)
-    DBI::dbExecute(duckdb_proxy, httpfs_statement)
-    DBI::dbExecute(duckdb_proxy, install_spatial_statement)
-    DBI::dbExecute(duckdb_proxy, spatial_statement)
-    DBI::dbExecute(duckdb_proxy, credentials_statement)
-  })
-
+  # on app exit close any mirai daemon
   shiny::onStop(function() {
     mirai::everywhere({DBI::dbDisconnect(duckdb_proxy)})
     mirai::daemons(0)
+    DBI::dbDisconnect(duckdb_conn)
   })
 
   #### JS scripts needed ####
