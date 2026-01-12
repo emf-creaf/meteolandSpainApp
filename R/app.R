@@ -78,8 +78,12 @@ meteoland_spain_app <- function() {
             shiny::HTML(glue::glue(
               '<img src="images/emf_white_logo.svg" width="120px" class="d-inline-block" alt="" loading="lazy">
               <img src="images/creaf_white_logo.svg" width="135px" class="d-inline-block" alt="" loading="lazy">
-              <span>({lubridate::year(Sys.Date())})</span>'
-            ))
+              <span>{lubridate::year(Sys.Date())}</span>'
+            )),
+            shiny::p(
+              mod_tab_translateOutput("meteo_copyright_translation"),
+              class = "copyright_p"
+            )
           )
         )
       ),
@@ -200,7 +204,7 @@ meteoland_spain_app <- function() {
     # tab translations
     c(
       "main_tab_translation", "ts_tab_translation", "cv_tab_translation",
-      "tech_specs_tab_translation"
+      "tech_specs_tab_translation", "meteo_copyright_translation"
     ) |>
       purrr::walk(
         .f = \(mod_id) {

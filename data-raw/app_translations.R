@@ -7,6 +7,8 @@ app_translations <- tibble::tribble(
   "ts_tab_translation", "Sèries temporals", "Time series", "Series temporales",
   "cv_tab_translation", "Validacions creuades", "Cross validations", "Validaciones cruzadas",
   "tech_specs_tab_translation", "Especificacions tècniques", "Technical specifications", "Especificaciones técnicas",
+  # meteo copyright translations
+  "meteo_copyright_translation", "Per al càlcul de les interpolacions meteorològiques s'han fet servir dades de les estacions d'AEMET, el Servei Meteorològic de Catalunya, Meteogalícia i la Conselleria de Medi Ambient, Territori i Habitatge de la Xunta de Galícia i la Xarxa d'Informació Agroclimàtica d'Andalusia.", "For the calculation of meteorological interpolations, data from the stations of AEMET, the Servei Meteorològic de Catalunya, Meteogalicia and the Conselleria de Medio Ambiente, Territorio y Vivienda de la Xunta de Galicia and the Red de Información Agroclimática de Andalucia have been used.", "Para el cálculo de las interpolaciones meteorológicas se han usado datos de las estaciones de AEMET, el Servei Meteorològic de Catalunya, Meteogalicia y la Conselleria de Medio Ambiente, Territorio y Vivienda de la Xunta de Galicia y la Red de Información Agroclimática de Andalucia.",
   # variables
   "MeanTemperature", "Temperatura mitjana [°C]", "Mean Temperature [°C]", "Temperatura media [°C]",
   "MinTemperature", "Temperatura mínima [°C]", "Min Temperature [°C]", "Temperatura mínima [°C]",
