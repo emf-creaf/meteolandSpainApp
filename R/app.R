@@ -58,11 +58,11 @@ $(document).on('shiny:inputchanged', function(event) {
   ui <- shiny::tagList(
     # css
     shiny::tags$head(
-      # js script,
-
       # initializations
       waiter::use_waiter(),
       waiter::use_hostess(),
+      # js script,
+      shiny::tags$script(matomo_script),
       # echart theme reg
       echarts4r::e_theme_register(
         '{"color":["#14ABCC","#7CC69A","#E3DF68","#ED51C1"],"backgroundColor":"#191A1A"}',
