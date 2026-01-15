@@ -30,6 +30,10 @@ A partir de la aproximació general, cal tenir en compte les diferències metodo
 + *Radiació* - La radiació solar incident diària es calcula en dos passos. En primer lloc es determina una radiació solar potencial tenint en compte la declinació solar així com la latitut, orientació i pendent del punt objectiu (Granier & Ohmura 1968), integrant la radiació  instantània entre l'alba i la posta de sol. A continuació, s'estima la radiació solar incident corregint la radiació potencial segons la transmitància de l'atmosfera, seguint l'aproximació de Thornton & Running (1999).
 + *Evapotranspiració potencial* - Un cop totes les variables esmentades anteriorment estan disponibles, es calcula l'evapotranspiració potencial de referència diària per al punt objectiu segons l'aproximació de Penman (1948).
 
+### Estimació per als darrers 365 dies
+
+L'aplicació **Meteoland App** ofereix la possibilitat d'estimar dades de meteorologia per als darrers 365 dies fins a l'última data disponible. La interpolació/càlcul de dades de l'any en curs es fa a partir de dades obtingudes diàriament mitjançant el paquet de R `meteospain`. Això implica que les dades de les estacions no han passat tots els controls de qualitat pertinents i poden contenir errors. La resolució espacial oferta és de 500 $m^2$.
+
 ### Estimació de paràmetres
 
 Com s'ha esmentat anteriorment, la metodologia d'interpolació requereix especificar els paràmetres $\alpha$ i $N$ per a cada variable a interpolar (en el cas de la precipitació, són dos parells). Aquests paràmetres s'han estimat mitjançant calibratges per a cada dia de l'any en curs, determinant aquells paràmetres que minimitzen l'error d'estimació a les mateixes estacions base.

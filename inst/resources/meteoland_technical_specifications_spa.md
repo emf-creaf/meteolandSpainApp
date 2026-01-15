@@ -32,7 +32,7 @@ Es importante tener en cuenta que existen variables que no son interpoladas, sin
 
 ### Estimación para los últimos 365 días
 
-La aplicación **Meteoland App** ofrece la posibilidad de estimar datos de meteorología para los últimos 365 días hasta la fecha de ayer. La interpolación/cálculo de datos del año en curso se realiza a partir de datos obtenidos a diario mediante el paquete de R `meteospain`. Esto implica que los datos de las estaciones no han pasado todos los controles de calidad pertinentes y pueden contener errores. La resolución espacial ofrecida es de 500 $m^2$.
+La aplicación **Meteoland App** ofrece la posibilidad de estimar datos de meteorología para los últimos 365 días hasta la última fecha disponible. La interpolación/cálculo de datos del año en curso se realiza a partir de datos obtenidos a diario mediante el paquete de R `meteospain`. Esto implica que los datos de las estaciones no han pasado todos los controles de calidad pertinentes y pueden contener errores. La resolución espacial ofrecida es de 500 $m^2$.
 
 ### Estimación de parámetros
 

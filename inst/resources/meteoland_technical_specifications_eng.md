@@ -31,7 +31,7 @@ It is important to note that there are variables that are not interpolated, but 
 
 ### Estimation for the last 365 days
 
-The **Meteoland App** application offers the possibility of estimating meteorological data for the last 365 days up to yesterday's date. The interpolation/calculation of data for the current year is performed from data obtained daily using the R package `meteospain`. This implies that the station data have not passed all the relevant quality controls and may contain errors. The spatial resolution offered is 500 $m^2$.
+The **Meteoland App** application offers the possibility of estimating meteorological data for the last 365 days up to most recent date available. The interpolation/calculation of data for the current year is performed from data obtained daily using the R package `meteospain`. This implies that the station data have not passed all the relevant quality controls and may contain errors. The spatial resolution offered is 500 $m^2$.
 
 ### Parameter estimation
 
