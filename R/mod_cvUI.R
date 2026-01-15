@@ -14,6 +14,7 @@ mod_cvUI <- function(id) {
       shiny::uiOutput(ns("mod_cv_container")),
       sidebar = bslib::sidebar(
         shiny::uiOutput(ns('inputs_cv')),
+        width = 350,
         class = "inputs_cv",
         open = list(desktop = "open", mobile = "always-above")
       )
@@ -52,7 +53,16 @@ mod_cv <- function(input, output, session, duckdb_conn, lang) {
       ), lang()))
 
     shiny::tagList(
-      shiny::h4(translate_app("cv_controls", lang())),
+      shiny::h4(translate_app("cv_controls", lang())) |>
+        add_help(
+          title = translate_app("map_help", lang()),
+          content = shiny::includeMarkdown(
+            system.file(
+              'resources', paste0("help_cv_", lang(), ".md"),
+              package = 'meteolandSpainApp'
+            )
+          )
+        ),
       shiny::br(),
       shiny::fluidRow(
         shiny::column(
@@ -76,7 +86,7 @@ mod_cv <- function(input, output, session, duckdb_conn, lang) {
             multiple = FALSE, range = FALSE,
             minDate = cv_date_choices[1],
             maxDate = cv_date_choices[length(cv_date_choices)],
-            firstDay = 1
+            firstDay = 1, autoClose = TRUE, addon = "none"
           )
         )
       )

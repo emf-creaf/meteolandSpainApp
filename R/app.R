@@ -28,31 +28,6 @@ meteoland_spain_app <- function() {
   )
 
   #### JS scripts needed ####
-  matomo_script <- shiny::HTML("
-var _paq = window._paq = window._paq || [];
-_paq.push(['trackPageView']);
-_paq.push(['enableLinkTracking']);
-(function() {
-  var u='https://stats-emf.creaf.cat/';
-  _paq.push(['setTrackerUrl', u+'matomo.php']);
-  _paq.push(['setSiteId', '7']);
-  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-  g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-})();
-
-// Event Tracking Code
-$(document).on('shiny:inputchanged', function(event) {
-  if (/^mod_map*/.test(event.name)) {
-    _paq.push(['trackEvent', 'mapInputs', event.name, event.value, 1, {dimension1: event.value}]);
-  }
-  if (/^mod_ts*/.test(event.name)) {
-    _paq.push(['trackEvent', 'tsInputs', event.name, event.value, 2, {dimension1: event.value}]);
-  }
-  if (/^mod_cv*/.test(event.name)) {
-    _paq.push(['trackEvent', 'cvInputs', event.name, event.value, 2, {dimension1: event.value}]);
-  }
-});"
-  )
 
   #### UI ####
   ui <- shiny::tagList(
@@ -61,8 +36,13 @@ $(document).on('shiny:inputchanged', function(event) {
       # initializations
       waiter::use_waiter(),
       waiter::use_hostess(),
-      # js script,
-      shiny::tags$script(matomo_script),
+      # js scripts,
+      shiny::includeScript(
+        system.file("resources", "js", "matomo.js", package = "meteolandSpainApp")
+      ),
+      shiny::includeScript(
+        system.file("resources", "js", "help.js", package = "meteolandSpainApp")
+      ),
       # echart theme reg
       echarts4r::e_theme_register(
         '{"color":["#14ABCC","#7CC69A","#E3DF68","#ED51C1"],"backgroundColor":"#191A1A"}',
@@ -236,6 +216,21 @@ $(document).on('shiny:inputchanged', function(event) {
           shiny::callModule(mod_tab_translate, mod_id, mod_id, lang)
         }
       )
+
+    # help observer
+    # code taken and modified from
+    # https://github.com/cwthom/shinyhelper/blob/master/R/observe_helpers.R
+    shiny::observe({
+      help_params <- input$`help-modal_params`
+      help_modal <- shiny::modalDialog(
+        shiny::HTML(help_params$content),
+        title = help_params$title,
+        footer = shiny::modalButton(translate_app("dismiss", lang())),
+        size = "l", easyClose = TRUE, fade = TRUE
+      )
+      shiny::showModal(help_modal)
+    }) |>
+      shiny::bindEvent(input$`help-modal_params`)
 
     ########################################################### debug ####
     # output$debug1 <- shiny::renderPrint({
