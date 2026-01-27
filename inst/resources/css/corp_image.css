@@ -337,3 +337,8 @@ footer>div.row {
 .copyright_p {
   font-size: 0.9rem;
 }
+
+/* bslib sidebar resizable text */
+.visually-hidden {
+  display: none;
+}
