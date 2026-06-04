@@ -19,7 +19,10 @@ boundaries_arranged <- purrr::map(
 
     # topo_sliced |>
     #   dplyr::mutate(bbox = topo_bbox, i_step = i_step)
-    dplyr::tibble(i_step = i_step, topo_bbox = topo_bbox, topo_nrow = topo_nrow)
+    dplyr::tibble(
+      i_step = as.character(i_step),
+      topo_bbox = topo_bbox, topo_nrow = topo_nrow
+    )
   }
 ) |>
   purrr::list_rbind() |>
